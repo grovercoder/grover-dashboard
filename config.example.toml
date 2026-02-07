@@ -1,13 +1,32 @@
+# ############################
+# Weather Configuration
+# ############################
+[weather]
+lat = 51.2917
+long = -114.0144
+units = "metric"
+
+# ############################
 # Email Configuration
-[email]
+# - add additional [[email]] blocks for different email accounts
+# ############################
+[[email]]
 host = "imap.gmail.com"
 port = 993
 user = "your_email@gmail.com"
 password = "your_app_password"
 mailboxes = ["INBOX", "Work", "Personal"]
 
-# Weather Configuration
-[weather]
-lat = 51.2917
-long = -114.0144
-units = "metric"
+
+# ############################
+# Project Configuration
+# ############################
+# Project Groups (folders that contain project folders)
+project_groups = [
+    "/home/username/Projects/"
+]
+
+# Specific project folders that may be located elsewhere
+project_roots = [
+    "/home/username/Tools/grover-dashboard"
+]
