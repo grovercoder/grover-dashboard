@@ -1,0 +1,8 @@
+dist/
+
+.aider*
+.env
+.venv
+__pycache__/
+
+*.egg*
