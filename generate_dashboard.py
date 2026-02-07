@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 import json
 import imaplib
 import email
@@ -6,6 +7,52 @@ from datetime import datetime
 import requests
 from jinja2 import Environment, FileSystemLoader
 from config import EMAIL_HOST, EMAIL_PORT, EMAIL_USER, EMAIL_PASSWORD, EMAIL_MAILBOXES, WEATHER_API_KEY, WEATHER_CITY, WEATHER_COUNTRY, WEATHER_UNITS, PROJECTS
+
+def get_projects_by_activity(base_path):
+    project_list = []
+    base = Path(base_path)
+
+    # Iterate through each item in the projects folder
+    for entry in base.iterdir():
+        if entry.is_dir():
+            latest_mtime = 0
+            
+            # Deep dive into the project to find the newest file
+            for root, _, files in os.walk(entry):
+                for f in files:
+                    try:
+                        file_path = os.path.join(root, f)
+                        mtime = os.path.getmtime(file_path)
+                        if mtime > latest_mtime:
+                            latest_mtime = mtime
+                    except (OSError, PermissionError):
+                        continue
+            
+            # If the folder is empty, use the folder's own mtime
+            if latest_mtime == 0:
+                latest_mtime = entry.stat().st_mtime
+                
+            project_list.append({
+                'name': entry.name,
+                'path': entry,
+                'last_mod': latest_mtime
+            })
+
+    # Sort by timestamp (descending = most recent first)
+    project_list.sort(key=lambda x: x['last_mod'], reverse=True)
+    return project_list
+
+# Execute
+projects_root = "./projects"
+sorted_projects = get_projects_by_activity(projects_root)
+
+print(f"{'Project Name':<30} | {'Last Updated':<20}")
+print("-" * 55)
+
+for p in sorted_projects:
+    dt = datetime.fromtimestamp(p['last_mod']).strftime('%Y-%m-%d %H:%M:%S')
+    print(f"{p['name']:<30} | {dt}")
+
 
 def get_email_counts():
     """Fetch email counts from multiple mailboxes"""
