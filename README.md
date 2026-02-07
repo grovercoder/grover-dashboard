@@ -33,7 +33,7 @@ A Python-based personal dashboard that generates an HTML file every hour with:
 
 ## Usage
 
-The dashboard will generate a `dashboard.html` file that you can set as your browser's new tab page.
+The dashboard will generate a `dashboard.html` file in the `dist` folder that you can set as your browser's new tab page.
 
 ## Scheduling
 

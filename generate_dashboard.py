@@ -77,6 +77,11 @@ def get_weather():
 def generate_dashboard():
     """Generate the HTML dashboard"""
     
+    # Create dist folder if it doesn't exist
+    dist_folder = 'dist'
+    if not os.path.exists(dist_folder):
+        os.makedirs(dist_folder)
+    
     # Get data
     email_counts = get_email_counts()
     weather_data = get_weather()
@@ -98,11 +103,12 @@ def generate_dashboard():
     # Render template
     html_output = template.render(template_data)
     
-    # Write to file
-    with open('dashboard.html', 'w') as f:
+    # Write to file in dist folder
+    output_path = os.path.join(dist_folder, 'dashboard.html')
+    with open(output_path, 'w') as f:
         f.write(html_output)
     
-    print("Dashboard generated successfully!")
+    print(f"Dashboard generated successfully! File saved to {output_path}")
 
 if __name__ == '__main__':
     generate_dashboard()
