@@ -27,3 +27,5 @@ wheels/
 # Environment files
 .env
 config.toml
+.aider*
+

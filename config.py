@@ -118,3 +118,6 @@ def find_project_directories():
 
 # Populate PROJECTS with discovered directories
 PROJECTS = find_project_directories()
+
+# Using the Pydantic model
+# config = DashboardConfig(**config_data)
