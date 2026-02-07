@@ -10,7 +10,10 @@
     <div class="container">
         <header>
             <h1>Personal Dashboard</h1>
-            <p class="timestamp">{{ date }} | Last updated: {{ current_time }}</p>
+            <div class="header-info">
+                <p class="date">{{ date }}</p>
+                <p class="timestamp">Last updated: {{ current_time }}</p>
+            </div>
         </header>
 
         <div class="dashboard-grid">
