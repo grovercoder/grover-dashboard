@@ -60,7 +60,8 @@ def get_email_counts():
             email_ids = messages[0].split()
             
             # Get mailbox user from email address
-            mailbox_user = EMAIL_USER.split('@')[0] if '@' in EMAIL_USER else EMAIL_USER
+            # mailbox_user = EMAIL_USER.split('@')[0] if '@' in EMAIL_USER else EMAIL_USER
+            mailbox_user = EMAIL_USER
             
             email_counts.append({
                 'mailbox': mailbox_user,
@@ -326,7 +327,8 @@ header {
         'weather': weather_data,
         'projects': projects,
         'current_time': current_time,
-        'date': datetime.now().strftime("%A, %B %d, %Y")
+        'date': datetime.now().strftime("%a, %b %d, %Y"),
+        'temp_units': 'C' if WEATHER_UNITS == 'metric' else 'F'
     }
     
     # Set up Jinja2 environment
