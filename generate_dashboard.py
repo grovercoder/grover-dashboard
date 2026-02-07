@@ -42,18 +42,6 @@ def get_projects_by_activity(base_path):
     project_list.sort(key=lambda x: x['last_mod'], reverse=True)
     return project_list
 
-# Execute
-projects_root = "./projects"
-sorted_projects = get_projects_by_activity(projects_root)
-
-print(f"{'Project Name':<30} | {'Last Updated':<20}")
-print("-" * 55)
-
-for p in sorted_projects:
-    dt = datetime.fromtimestamp(p['last_mod']).strftime('%Y-%m-%d %H:%M:%S')
-    print(f"{p['name']:<30} | {dt}")
-
-
 def get_email_counts():
     """Fetch email counts from multiple mailboxes"""
     email_counts = []
@@ -124,25 +112,6 @@ def get_weather():
             'wind_speed': 'N/A'
         }
 
-def get_most_recent_modification_time(path):
-    """Get the most recent modification time of files in a directory"""
-    if not os.path.exists(path):
-        return 0
-    
-    max_time = 0
-    for root, dirs, files in os.walk(path):
-        for file in files:
-            file_path = os.path.join(root, file)
-            try:
-                file_time = os.path.getmtime(file_path)
-                if file_time > max_time:
-                    max_time = file_time
-            except (OSError, IOError):
-                # Skip files that can't be accessed
-                continue
-    
-    return max_time
-
 def get_projects_from_directory():
     """Read projects from ~/Projects directory structure"""
     projects = []
@@ -158,34 +127,33 @@ def get_projects_from_directory():
     # Process customer projects
     customers_dir = os.path.join(projects_dir, "customers")
     if os.path.exists(customers_dir):
-        for item in os.listdir(customers_dir):
-            item_path = os.path.join(customers_dir, item)
-            if os.path.isdir(item_path):
-                projects.append({
-                    'name': item,
-                    'progress': 0,  # Customer projects typically don't have progress
-                    'status': 'Customer Project',
-                    'path': item_path,
-                    'last_modified': get_most_recent_modification_time(item_path)
-                })
+        customer_projects = get_projects_by_activity(customers_dir)
+        for item in customer_projects:
+            projects.append({
+                'name': item['name'],
+                'progress': 0,  # Customer projects typically don't have progress
+                'status': 'Customer Project',
+                'path': str(item['path']),
+                'last_modified': item['last_mod']
+            })
     
     # Process research projects
     research_dir = os.path.join(projects_dir, "research")
     if os.path.exists(research_dir):
-        for item in os.listdir(research_dir):
-            item_path = os.path.join(research_dir, item)
-            if os.path.isdir(item_path):
-                # Check if it's a git repository to determine if it's active
-                git_path = os.path.join(item_path, ".git")
-                is_active = os.path.exists(git_path)
-                
-                projects.append({
-                    'name': item,
-                    'progress': 0,  # Research projects typically don't have progress
-                    'status': 'Research Project' + (' (Active)' if is_active else ' (Inactive)'),
-                    'path': item_path,
-                    'last_modified': get_most_recent_modification_time(item_path)
-                })
+        research_projects = get_projects_by_activity(research_dir)
+        for item in research_projects:
+            item_path = str(item['path'])
+            # Check if it's a git repository to determine if it's active
+            git_path = os.path.join(item_path, ".git")
+            is_active = os.path.exists(git_path)
+            
+            projects.append({
+                'name': item['name'],
+                'progress': 0,  # Research projects typically don't have progress
+                'status': 'Research Project' + (' (Active)' if is_active else ' (Inactive)'),
+                'path': item_path,
+                'last_modified': item['last_mod']
+            })
     
     # Sort projects by last modified time (most recent first)
     projects.sort(key=lambda x: x['last_modified'], reverse=True)
