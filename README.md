@@ -42,6 +42,12 @@ A Python-based personal dashboard that generates an HTML file every hour with:
 
 The dashboard will generate a `dashboard.html` file in the `dist` folder that you can set as your browser's new tab page.
 
+## Background
+
+I create "research" projects on a regular basis to learn or explore various coding concepts, or even just to see if a project might be feasible.  This adds up over time and I wanted a better way to track those random projects.  I also wanted a way to have an "at-a-glance" page to show me the status of various things I might be interested in.  To start with I'm focusing on the current weather in my area and how many unread emails I have (without having to switch to my mail client).  This project provides a tool that does all of that for me.  
+
+Eventually I'd like to expand this to include tracking my finances, appointments, and more.
+
 ## Projects
 
 A project is just a working directory for something.  This could be a python application, a book, a graphic or video project, or whatever else you want.
