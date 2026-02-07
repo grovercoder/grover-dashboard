@@ -92,48 +92,47 @@ def get_progress(project_path):
     return "Unknown"
 
 def get_email_counts():
-    """Fetch email counts from multiple mailboxes"""
+    """Fetch email counts from multiple mailboxes across all email accounts"""
     email_counts = []
     
     try:
-        # Use the first email account for fetching counts
-        account = EMAIL_ACCOUNTS[0]
-        
-        # Connect to the email server
-        mail = imaplib.IMAP4_SSL(account.host)
-        mail.login(account.user, account.password)
-        
-        for mailbox in account.mailboxes:
-            # Select mailbox
-            mail.select(mailbox)
+        # Iterate through all email accounts
+        for account in EMAIL_ACCOUNTS:
+            # Connect to the email server
+            mail = imaplib.IMAP4_SSL(account.host)
+            mail.login(account.user, account.password)
             
-            # Search for unread emails
-            status, messages = mail.search(None, 'UNSEEN')
-            email_ids = messages[0].split()
+            for mailbox in account.mailboxes:
+                # Select mailbox
+                mail.select(mailbox)
+                
+                # Search for unread emails
+                status, messages = mail.search(None, 'UNSEEN')
+                email_ids = messages[0].split()
+                
+                # Get mailbox user from email address
+                mailbox_user = account.user.split('@')[0] if '@' in account.user else account.user
+                
+                email_counts.append({
+                    'mailbox': mailbox_user,
+                    'count': len(email_ids)
+                })
             
-            # Get mailbox user from email address
-            mailbox_user = account.user.split('@')[0] if '@' in account.user else account.user
-            
-            email_counts.append({
-                'mailbox': mailbox_user,
-                'count': len(email_ids)
-            })
-        
-        mail.close()
-        mail.logout()
+            mail.close()
+            mail.logout()
         
     except Exception as e:
         print(f"Error fetching email counts: {e}")
         # Return default values if error occurs
         if EMAIL_ACCOUNTS:
-            account = EMAIL_ACCOUNTS[0]
-            for mailbox in account.mailboxes:
-                # Get mailbox user from email address
-                mailbox_user = account.user.split('@')[0] if '@' in account.user else account.user
-                email_counts.append({
-                    'mailbox': mailbox_user,
-                    'count': 0
-                })
+            for account in EMAIL_ACCOUNTS:
+                for mailbox in account.mailboxes:
+                    # Get mailbox user from email address
+                    mailbox_user = account.user.split('@')[0] if '@' in account.user else account.user
+                    email_counts.append({
+                        'mailbox': mailbox_user,
+                        'count': 0
+                    })
         else:
             # Fallback to environment variables if no account
             mailbox_user = os.getenv('EMAIL_USER', '').split('@')[0] if '@' in os.getenv('EMAIL_USER', '') else os.getenv('EMAIL_USER', '')
