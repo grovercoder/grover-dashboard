@@ -77,6 +77,25 @@ def get_weather():
             'wind_speed': 'N/A'
         }
 
+def get_most_recent_modification_time(path):
+    """Get the most recent modification time of files in a directory"""
+    if not os.path.exists(path):
+        return 0
+    
+    max_time = 0
+    for root, dirs, files in os.walk(path):
+        for file in files:
+            file_path = os.path.join(root, file)
+            try:
+                file_time = os.path.getmtime(file_path)
+                if file_time > max_time:
+                    max_time = file_time
+            except (OSError, IOError):
+                # Skip files that can't be accessed
+                continue
+    
+    return max_time
+
 def get_projects_from_directory():
     """Read projects from ~/Projects directory structure"""
     projects = []
@@ -99,7 +118,8 @@ def get_projects_from_directory():
                     'name': item,
                     'progress': 0,  # Customer projects typically don't have progress
                     'status': 'Customer Project',
-                    'path': item_path
+                    'path': item_path,
+                    'last_modified': get_most_recent_modification_time(item_path)
                 })
     
     # Process research projects
@@ -116,8 +136,12 @@ def get_projects_from_directory():
                     'name': item,
                     'progress': 0,  # Research projects typically don't have progress
                     'status': 'Research Project' + (' (Active)' if is_active else ' (Inactive)'),
-                    'path': item_path
+                    'path': item_path,
+                    'last_modified': get_most_recent_modification_time(item_path)
                 })
+    
+    # Sort projects by last modified time (most recent first)
+    projects.sort(key=lambda x: x['last_modified'], reverse=True)
     
     return projects
 
