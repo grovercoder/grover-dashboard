@@ -12,9 +12,9 @@ EMAIL_PASSWORD = os.getenv('EMAIL_PASSWORD')
 EMAIL_MAILBOXES = os.getenv('EMAIL_MAILBOXES', 'INBOX').split(',')
 
 # Weather configuration
-WEATHER_API_KEY = os.getenv('WEATHER_API_KEY')
-WEATHER_CITY = os.getenv('WEATHER_CITY', 'London')
-WEATHER_COUNTRY = os.getenv('WEATHER_COUNTRY', 'UK')
+WEATHER_CITY = os.getenv('WEATHER_CITY')
+WEATHER_LAT = os.getenv('WEATHER_LAT')
+WEATHER_LONG = os.getenv('WEATHER_LONG')
 WEATHER_UNITS = os.getenv('WEATHER_UNITS', 'metric')
 
 # Project configuration - will be populated dynamically
