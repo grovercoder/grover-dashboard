@@ -1,4 +1,6 @@
 import os
+import re
+import subprocess
 from pathlib import Path
 import json
 import imaplib
@@ -41,6 +43,53 @@ def get_projects_by_activity(base_path):
     # Sort by timestamp (descending = most recent first)
     project_list.sort(key=lambda x: x['last_mod'], reverse=True)
     return project_list
+
+def get_progress(project_path):
+    """Calculate project progress based on multiple methods"""
+    # 1. Tier 1: Python Acceptance Tests
+    test_file = os.path.join(project_path, "tests/acceptance.py")
+    if os.path.exists(test_file):
+        try:
+            # Run pytest quietly, just collecting results
+            # We use --collect-only first to see total tests, then run to see passes
+            result = subprocess.run(
+                ["pytest", test_file, "--json-report"], # Requires pytest-json-report plugin
+                capture_output=True, text=True
+            )
+            
+            # Simple fallback if you don't want plugins: Check exit code & output
+            # 0 = all pass, 1 = some fail, 5 = no tests found
+            process = subprocess.run(["pytest", "-q", "--tb=no", test_file], capture_output=True, text=True)
+            output = process.stdout
+            
+            # Extract "5 passed, 2 failed" style strings
+            passed = re.search(r'(\d+) passed', output)
+            failed = re.search(r'(\d+) failed', output)
+            
+            p_count = int(passed.group(1)) if passed else 0
+            f_count = int(failed.group(1)) if failed else 0
+            
+            if (p_count + f_count) > 0:
+                return round((p_count / (p_count + f_count)) * 100, 2)
+        except Exception:
+            pass # Fall back to next tier if pytest fails
+
+    # 2. Tier 2: Markdown Checklist
+    checklist_path = os.path.join(project_path, "docs/acceptance_checklist.md")
+    if os.path.exists(checklist_path):
+        try:
+            with open(checklist_path, 'r') as f:
+                content = f.read()
+                done = len(re.findall(r'\[x\]', content, re.IGNORECASE))
+                todo = len(re.findall(r'\[ \]', content, re.IGNORECASE))
+                
+                if (done + todo) > 0:
+                    return round((done / (done + todo)) * 100, 2)
+        except Exception:
+            pass
+
+    # 3. Tier 3: Unknown
+    return "Unknown"
 
 def get_email_counts():
     """Fetch email counts from multiple mailboxes"""
@@ -193,9 +242,12 @@ def get_projects_from_directory():
             git_path = os.path.join(item_path, ".git")
             is_active = os.path.exists(git_path)
             
+            # Calculate progress
+            progress = get_progress(item_path)
+            
             projects.append({
                 'name': item['name'],
-                'progress': 0,  # Research projects typically don't have progress
+                'progress': progress,
                 'status': 'Research Project' + (' (Active)' if is_active else ' (Inactive)'),
                 'path': item_path,
                 'last_modified': item['last_mod']
