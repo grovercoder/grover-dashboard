@@ -5,7 +5,7 @@ import email
 from datetime import datetime
 import requests
 from jinja2 import Environment, FileSystemLoader
-from config import EMAIL_HOST, EMAIL_PORT, EMAIL_USER, EMAIL_PASSWORD, EMAIL_MAILBOXES, WEATHER_API_KEY, WEATHER_CITY, WEATHER_UNITS, PROJECTS
+from config import EMAIL_HOST, EMAIL_PORT, EMAIL_USER, EMAIL_PASSWORD, EMAIL_MAILBOXES, WEATHER_API_KEY, WEATHER_CITY, WEATHER_COUNTRY, WEATHER_UNITS, PROJECTS
 
 def get_email_counts():
     """Fetch email counts from multiple mailboxes"""
@@ -48,7 +48,8 @@ def get_weather():
     try:
         url = "https://api.api-ninjas.com/v1/weather"
         params = {
-            'city': WEATHER_CITY
+            'city': WEATHER_CITY,
+            'country': WEATHER_COUNTRY
         }
         
         headers = {
