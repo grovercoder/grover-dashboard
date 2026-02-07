@@ -40,45 +40,14 @@ try:
     # Create the full configuration model
     dashboard_config = DashboardConfig(**config_data)
     
-    # Extract individual components for backward compatibility
+    # Extract individual components
     EMAIL_ACCOUNTS = dashboard_config.email
     WEATHER_CONFIG = dashboard_config.weather
     PROJECTS = dashboard_config.projects
     
-    # For backward compatibility, set individual variables from the first account
-    if EMAIL_ACCOUNTS:
-        EMAIL_HOST = EMAIL_ACCOUNTS[0].server
-        EMAIL_PORT = EMAIL_ACCOUNTS[0].port
-        EMAIL_USER = EMAIL_ACCOUNTS[0].user
-        EMAIL_PASSWORD = EMAIL_ACCOUNTS[0].password
-        EMAIL_MAILBOXES = ["INBOX"]  # Default mailbox, can be extended if needed
-    else:
-        # Fallback to environment variables
-        EMAIL_HOST = os.getenv('EMAIL_HOST')
-        EMAIL_PORT = int(os.getenv('EMAIL_PORT', 993))
-        EMAIL_USER = os.getenv('EMAIL_USER')
-        EMAIL_PASSWORD = os.getenv('EMAIL_PASSWORD')
-        EMAIL_MAILBOXES = os.getenv('EMAIL_MAILBOXES', 'INBOX').split(',') if os.getenv('EMAIL_MAILBOXES') else ['INBOX']
-        
-    # Set weather variables
-    WEATHER_CITY = WEATHER_CONFIG.city
-    WEATHER_LAT = WEATHER_CONFIG.lat
-    WEATHER_LONG = WEATHER_CONFIG.long
-    WEATHER_UNITS = WEATHER_CONFIG.units
-    
 except Exception as e:
     print(f"Error creating configuration model: {e}")
     # Fallback to environment variables if model creation fails
-    EMAIL_HOST = os.getenv('EMAIL_HOST')
-    EMAIL_PORT = int(os.getenv('EMAIL_PORT', 993))
-    EMAIL_USER = os.getenv('EMAIL_USER')
-    EMAIL_PASSWORD = os.getenv('EMAIL_PASSWORD')
-    EMAIL_MAILBOXES = os.getenv('EMAIL_MAILBOXES', 'INBOX').split(',') if os.getenv('EMAIL_MAILBOXES') else ['INBOX']
-    
-    WEATHER_CITY = os.getenv('WEATHER_CITY')
-    WEATHER_LAT = os.getenv('WEATHER_LAT')
-    WEATHER_LONG = os.getenv('WEATHER_LONG')
-    WEATHER_UNITS = os.getenv('WEATHER_UNITS', 'metric')
-    
-    # Initialize empty project list
+    EMAIL_ACCOUNTS = []
+    WEATHER_CONFIG = WeatherConfig(city="", lat=0.0, long=0.0, units="metric")
     PROJECTS = []
