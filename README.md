@@ -6,6 +6,9 @@ A Python-based personal dashboard that generates an HTML file every hour with:
 - Project progress tracking
 - Current date and time
 
+## Screenshot
+<img src="docs/img/screenshot.png" width="600" alt="Project Screenshot">
+
 ## Features
 
 - **Email Integration**: Shows unread email counts from multiple mailboxes
@@ -30,11 +33,28 @@ A Python-based personal dashboard that generates an HTML file every hour with:
    ```
    python generate_dashboard.py
    ```
-
+6. Add a cron job to periodically call this process (usually via `crontab -e`).
+   ```
+   # to update every 30 minutes
+   */30 * * * * cd /home/USERNAME/path/grover-dashboard && ./.venv/bin/python generate_dashboard.py
+   ```
 ## Usage
 
 The dashboard will generate a `dashboard.html` file in the `dist` folder that you can set as your browser's new tab page.
 
-## Scheduling
+## Projects
 
-To run this hourly, add to your crontab:
+A project is just a working directory for something.  This could be a python application, a book, a graphic or video project, or whatever else you want.
+
+Projects are currently hard coded to look for `$HOME/Projects/customers`, and `$HOME/Projects/research`.  The sub directories of these locations are candidates to be considered a project.
+
+### Progress
+
+Progress is determined in one of two ways:
+
+1. a `tests/acceptance.py` unit testing file exists in the project directory.  This unit test file indicates what tests must pass to consider the project completed.  (Only applies to Python projects with unit testing)
+2. a `docs/acceptance_checklist.md` file exits.  The "checked" items are used to calculate the progress. (See [docs/acceptance_checklist.example.md](docs/acceptance_checklist.example.md))
+3. If neither option is found "Unknown" is returned.  Any project marked Unknown is an indicator that project should be updated or pruned.
+
+
+

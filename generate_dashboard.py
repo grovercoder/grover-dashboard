@@ -381,7 +381,8 @@ header {
         'projects': projects,
         'current_time': current_time,
         'date': datetime.now().strftime("%a, %b %d, %Y"),
-        'temp_units': 'C' if WEATHER_UNITS == 'metric' else 'F'
+        'temp_units': 'C' if WEATHER_UNITS == 'metric' else 'F',
+        'wind_units': 'kph' if WEATHER_UNITS == 'metric' else 'mph'
     }
     
     # Set up Jinja2 environment
