@@ -74,6 +74,50 @@ def get_weather():
             'wind_speed': 'N/A'
         }
 
+def get_projects_from_directory():
+    """Read projects from ~/Projects directory structure"""
+    projects = []
+    
+    # Define the projects directory
+    projects_dir = os.path.expanduser("~/Projects")
+    
+    # Check if the directory exists
+    if not os.path.exists(projects_dir):
+        print(f"Projects directory not found: {projects_dir}")
+        return projects
+    
+    # Process customer projects
+    customers_dir = os.path.join(projects_dir, "customers")
+    if os.path.exists(customers_dir):
+        for item in os.listdir(customers_dir):
+            item_path = os.path.join(customers_dir, item)
+            if os.path.isdir(item_path):
+                projects.append({
+                    'name': item,
+                    'progress': 0,  # Customer projects typically don't have progress
+                    'status': 'Customer Project',
+                    'path': item_path
+                })
+    
+    # Process research projects
+    research_dir = os.path.join(projects_dir, "research")
+    if os.path.exists(research_dir):
+        for item in os.listdir(research_dir):
+            item_path = os.path.join(research_dir, item)
+            if os.path.isdir(item_path):
+                # Check if it's a git repository to determine if it's active
+                git_path = os.path.join(item_path, ".git")
+                is_active = os.path.exists(git_path)
+                
+                projects.append({
+                    'name': item,
+                    'progress': 0,  # Research projects typically don't have progress
+                    'status': 'Research Project' + (' (Active)' if is_active else ' (Inactive)'),
+                    'path': item_path
+                })
+    
+    return projects
+
 def generate_dashboard():
     """Generate the HTML dashboard"""
     
@@ -186,13 +230,14 @@ header {
     # Get data
     email_counts = get_email_counts()
     weather_data = get_weather()
+    projects = get_projects_from_directory()
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     
     # Prepare data for template
     template_data = {
         'email_counts': email_counts,
         'weather': weather_data,
-        'projects': PROJECTS,
+        'projects': projects,
         'current_time': current_time,
         'date': datetime.now().strftime("%A, %B %d, %Y")
     }

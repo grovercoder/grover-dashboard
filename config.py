@@ -16,16 +16,5 @@ WEATHER_API_KEY = os.getenv('WEATHER_API_KEY')
 WEATHER_CITY = os.getenv('WEATHER_CITY', 'London')
 WEATHER_UNITS = os.getenv('WEATHER_UNITS', 'metric')
 
-# Project configuration
-PROJECTS = [
-    {
-        'name': 'Project Alpha',
-        'progress': 75,
-        'status': 'In Progress'
-    },
-    {
-        'name': 'Project Beta',
-        'progress': 40,
-        'status': 'Planning'
-    }
-]
+# Project configuration - will be populated dynamically
+PROJECTS = []
