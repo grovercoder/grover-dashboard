@@ -8,7 +8,7 @@ import email
 from datetime import datetime
 import requests
 from jinja2 import Environment, FileSystemLoader
-from config import EMAIL_HOST, EMAIL_PORT, EMAIL_USER, EMAIL_PASSWORD, EMAIL_MAILBOXES, WEATHER_CITY, WEATHER_LAT, WEATHER_LONG, WEATHER_UNITS, PROJECTS
+from config import EMAIL_ACCOUNTS, WEATHER_CITY, WEATHER_LAT, WEATHER_LONG, WEATHER_UNITS, PROJECTS
 
 def get_projects_by_activity(base_path):
     project_list = []
@@ -96,11 +96,14 @@ def get_email_counts():
     email_counts = []
     
     try:
-        # Connect to the email server
-        mail = imaplib.IMAP4_SSL(EMAIL_HOST)
-        mail.login(EMAIL_USER, EMAIL_PASSWORD)
+        # Use the first email account for fetching counts
+        account = EMAIL_ACCOUNTS[0]
         
-        for mailbox in EMAIL_MAILBOXES:
+        # Connect to the email server
+        mail = imaplib.IMAP4_SSL(account.host)
+        mail.login(account.user, account.password)
+        
+        for mailbox in account.mailboxes:
             # Select mailbox
             mail.select(mailbox)
             
@@ -109,8 +112,7 @@ def get_email_counts():
             email_ids = messages[0].split()
             
             # Get mailbox user from email address
-            # mailbox_user = EMAIL_USER.split('@')[0] if '@' in EMAIL_USER else EMAIL_USER
-            mailbox_user = EMAIL_USER
+            mailbox_user = account.user.split('@')[0] if '@' in account.user else account.user
             
             email_counts.append({
                 'mailbox': mailbox_user,
@@ -123,9 +125,18 @@ def get_email_counts():
     except Exception as e:
         print(f"Error fetching email counts: {e}")
         # Return default values if error occurs
-        for mailbox in EMAIL_MAILBOXES:
-            # Get mailbox user from email address
-            mailbox_user = EMAIL_USER.split('@')[0] if '@' in EMAIL_USER else EMAIL_USER
+        if EMAIL_ACCOUNTS:
+            account = EMAIL_ACCOUNTS[0]
+            for mailbox in account.mailboxes:
+                # Get mailbox user from email address
+                mailbox_user = account.user.split('@')[0] if '@' in account.user else account.user
+                email_counts.append({
+                    'mailbox': mailbox_user,
+                    'count': 0
+                })
+        else:
+            # Fallback to environment variables if no account
+            mailbox_user = os.getenv('EMAIL_USER', '').split('@')[0] if '@' in os.getenv('EMAIL_USER', '') else os.getenv('EMAIL_USER', '')
             email_counts.append({
                 'mailbox': mailbox_user,
                 'count': 0

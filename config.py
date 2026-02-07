@@ -1,6 +1,8 @@
 import os
 import sys
 from pathlib import Path
+from pydantic import BaseModel
+from typing import List, Optional
 
 # Try to import tomllib (Python 3.11+) or toml (older versions)
 try:
@@ -10,6 +12,14 @@ except ImportError:
         import toml as tomllib
     except ImportError:
         raise ImportError("Either 'tomllib' (Python 3.11+) or 'toml' package is required")
+
+# Email account model
+class EmailAccount(BaseModel):
+    host: str
+    port: int = 993
+    user: str
+    password: str
+    mailboxes: List[str] = ["INBOX"]
 
 # Get the directory containing this config.py file
 config_dir = Path(__file__).parent
@@ -24,35 +34,33 @@ else:
     config_data = {}
 
 # Email configuration - handle multiple email accounts
-EMAIL_ACCOUNTS = []
+EMAIL_ACCOUNTS: List[EmailAccount] = []
 
 # Get email accounts from config
 email_configs = config_data.get('email', [])
 if isinstance(email_configs, dict):
     # Single email account
-    EMAIL_ACCOUNTS = [email_configs]
+    EMAIL_ACCOUNTS = [EmailAccount(**email_configs)]
 elif isinstance(email_configs, list):
     # Multiple email accounts
-    EMAIL_ACCOUNTS = email_configs
+    EMAIL_ACCOUNTS = [EmailAccount(**account) for account in email_configs]
 else:
     # Fallback to environment variables if no config
-    EMAIL_ACCOUNTS = [{
-        'host': os.getenv('EMAIL_HOST'),
-        'port': int(os.getenv('EMAIL_PORT', 993)),
-        'user': os.getenv('EMAIL_USER'),
-        'password': os.getenv('EMAIL_PASSWORD'),
-        'mailboxes': os.getenv('EMAIL_MAILBOXES', 'INBOX').split(',') if os.getenv('EMAIL_MAILBOXES') else ['INBOX']
-    }]
+    EMAIL_ACCOUNTS = [EmailAccount(
+        host=os.getenv('EMAIL_HOST'),
+        port=int(os.getenv('EMAIL_PORT', 993)),
+        user=os.getenv('EMAIL_USER'),
+        password=os.getenv('EMAIL_PASSWORD'),
+        mailboxes=os.getenv('EMAIL_MAILBOXES', 'INBOX').split(',') if os.getenv('EMAIL_MAILBOXES') else ['INBOX']
+    )]
 
 # For backward compatibility, set individual variables from the first account
 if EMAIL_ACCOUNTS:
-    EMAIL_HOST = EMAIL_ACCOUNTS[0].get('host') or os.getenv('EMAIL_HOST')
-    EMAIL_PORT = int(EMAIL_ACCOUNTS[0].get('port', 993) or os.getenv('EMAIL_PORT', 993))
-    EMAIL_USER = EMAIL_ACCOUNTS[0].get('user') or os.getenv('EMAIL_USER')
-    EMAIL_PASSWORD = EMAIL_ACCOUNTS[0].get('password') or os.getenv('EMAIL_PASSWORD')
-    EMAIL_MAILBOXES = EMAIL_ACCOUNTS[0].get('mailboxes', ['INBOX'])
-    if isinstance(EMAIL_MAILBOXES, str):
-        EMAIL_MAILBOXES = [EMAIL_MAILBOXES]
+    EMAIL_HOST = EMAIL_ACCOUNTS[0].host
+    EMAIL_PORT = EMAIL_ACCOUNTS[0].port
+    EMAIL_USER = EMAIL_ACCOUNTS[0].user
+    EMAIL_PASSWORD = EMAIL_ACCOUNTS[0].password
+    EMAIL_MAILBOXES = EMAIL_ACCOUNTS[0].mailboxes
 else:
     # Fallback to environment variables
     EMAIL_HOST = os.getenv('EMAIL_HOST')
