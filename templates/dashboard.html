@@ -38,17 +38,27 @@
                 <p>Humidity: {{ weather.humidity }}%</p>
                 <p>Wind Speed: {{ weather.wind_speed }} m/s</p>
             </div>
+        </div>
 
-            <!-- Projects Section -->
-            <div class="card">
-                <h2>Projects Progress</h2>
+        <!-- Projects Section -->
+        <div class="projects-card">
+            <h2>Projects Progress</h2>
+            <div class="projects-grid">
+                <div class="project-header">
+                    <div class="project-name">Name</div>
+                    <div class="project-status">Status</div>
+                    <div class="project-progress">Progress</div>
+                    <div class="project-bar">Bar</div>
+                </div>
                 {% for project in projects %}
                 <div class="project-item">
-                    <h3>{{ project.name }}</h3>
-                    <p>Status: {{ project.status }}</p>
-                    <p>Progress: {{ project.progress }}%</p>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: {{ project.progress }}%"></div>
+                    <div class="project-name">{{ project.name }}</div>
+                    <div class="project-status">{{ project.status }}</div>
+                    <div class="project-progress">{{ project.progress }}%</div>
+                    <div class="project-bar">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: {{ project.progress }}%"></div>
+                        </div>
                     </div>
                 </div>
                 {% endfor %}
