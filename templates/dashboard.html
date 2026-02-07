@@ -42,7 +42,10 @@
 
         <!-- Projects Section -->
         <div class="projects-card">
-            <h2>Projects Progress</h2>
+            <div class="projects-header">
+                <h2>Projects Progress</h2>
+                <small>{{ projects | length }} Projects</small>
+            </div>
             <div class="projects-grid">
                 <div class="project-header">
                     <div class="project-name">Name</div>
@@ -52,12 +55,16 @@
                 </div>
                 {% for project in projects %}
                 <div class="project-item">
-                    <div class="project-name">{{ project.name }}</div>
+                    <div class="project-name">
+                        <a href="vscode://file{{ project.project_path }}">{{ project.name }}</a>
+                    </div>
                     <div class="project-status">{{ project.status }}</div>
-                    <div class="project-progress">{{ project.progress }}%</div>
+                    <div class="project-progress">
+                        {{ project.progress }}{{ '%' if project.progress is number else '' }}
+                    </div>
                     <div class="project-bar">
                         <div class="progress-bar">
-                            <div class="progress-fill" style="width: {{ project.progress }}%"></div>
+                            <div class="progress-fill" style="width: {{ project.progress if project.progress is number else 0 }}%"></div>
                         </div>
                     </div>
                 </div>

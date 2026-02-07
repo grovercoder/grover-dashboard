@@ -247,6 +247,7 @@ def get_projects_from_directory():
             
             projects.append({
                 'name': item['name'],
+                'project_path': item_path,
                 'progress': progress,
                 'status': 'Research Project' + (' (Active)' if is_active else ' (Inactive)'),
                 'path': item_path,

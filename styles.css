@@ -162,6 +162,15 @@ header {
 
 .project-name {
     font-weight: bold;
+
+    a {
+        color: var(--text-secondary);
+        text-decoration: none;
+
+        &:hover {
+            color: var(--text-primary);
+        }
+    }
 }
 
 .project-status {
