@@ -2,8 +2,8 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 20px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    color: #e0e0e0;
     min-height: 100vh;
 }
 
@@ -16,9 +16,10 @@ header {
     text-align: center;
     margin-bottom: 30px;
     padding: 20px;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(30, 30, 46, 0.7);
     border-radius: 10px;
     backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
 .dashboard-grid {
@@ -29,17 +30,19 @@ header {
 }
 
 .card {
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(30, 30, 46, 0.7);
     border-radius: 10px;
     padding: 20px;
     backdrop-filter: blur(10px);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .card h2 {
     margin-top: 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
     padding-bottom: 10px;
+    color: #ffffff;
 }
 
 .email-item {
@@ -47,6 +50,7 @@ header {
     justify-content: space-between;
     padding: 8px 0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    color: #d0d0d0;
 }
 
 .email-item:last-child {
@@ -55,12 +59,13 @@ header {
 
 .project-item {
     margin-bottom: 15px;
+    color: #d0d0d0;
 }
 
 .progress-bar {
     width: 100%;
     height: 10px;
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.1);
     border-radius: 5px;
     overflow: hidden;
     margin-top: 5px;
@@ -68,7 +73,7 @@ header {
 
 .progress-fill {
     height: 100%;
-    background: #4CAF50;
+    background: linear-gradient(90deg, #00c9ff, #92fe9d);
     border-radius: 5px;
 }
 
@@ -76,10 +81,12 @@ header {
     font-size: 3em;
     text-align: center;
     margin: 10px 0;
+    color: #ffffff;
 }
 
 .timestamp {
     text-align: center;
     font-size: 0.9em;
     opacity: 0.8;
+    color: #a0a0a0;
 }
