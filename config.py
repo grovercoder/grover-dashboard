@@ -44,22 +44,22 @@ else:
         'mailboxes': os.getenv('EMAIL_MAILBOXES', 'INBOX').split(',') if os.getenv('EMAIL_MAILBOXES') else ['INBOX']
     }]
 
-# Process each email account
-EMAIL_HOSTS = []
-EMAIL_PORTS = []
-EMAIL_USERS = []
-EMAIL_PASSWORDS = []
-EMAIL_MAILBOXES = []
-
-for account in EMAIL_ACCOUNTS:
-    EMAIL_HOSTS.append(account.get('host') or os.getenv('EMAIL_HOST'))
-    EMAIL_PORTS.append(int(account.get('port', 993) or os.getenv('EMAIL_PORT', 993)))
-    EMAIL_USERS.append(account.get('user') or os.getenv('EMAIL_USER'))
-    EMAIL_PASSWORDS.append(account.get('password') or os.getenv('EMAIL_PASSWORD'))
-    mailboxes = account.get('mailboxes', ['INBOX'])
-    if isinstance(mailboxes, str):
-        mailboxes = [mailboxes]
-    EMAIL_MAILBOXES.append(mailboxes)
+# For backward compatibility, set individual variables from the first account
+if EMAIL_ACCOUNTS:
+    EMAIL_HOST = EMAIL_ACCOUNTS[0].get('host') or os.getenv('EMAIL_HOST')
+    EMAIL_PORT = int(EMAIL_ACCOUNTS[0].get('port', 993) or os.getenv('EMAIL_PORT', 993))
+    EMAIL_USER = EMAIL_ACCOUNTS[0].get('user') or os.getenv('EMAIL_USER')
+    EMAIL_PASSWORD = EMAIL_ACCOUNTS[0].get('password') or os.getenv('EMAIL_PASSWORD')
+    EMAIL_MAILBOXES = EMAIL_ACCOUNTS[0].get('mailboxes', ['INBOX'])
+    if isinstance(EMAIL_MAILBOXES, str):
+        EMAIL_MAILBOXES = [EMAIL_MAILBOXES]
+else:
+    # Fallback to environment variables
+    EMAIL_HOST = os.getenv('EMAIL_HOST')
+    EMAIL_PORT = int(os.getenv('EMAIL_PORT', 993))
+    EMAIL_USER = os.getenv('EMAIL_USER')
+    EMAIL_PASSWORD = os.getenv('EMAIL_PASSWORD')
+    EMAIL_MAILBOXES = os.getenv('EMAIL_MAILBOXES', 'INBOX').split(',') if os.getenv('EMAIL_MAILBOXES') else ['INBOX']
 
 # Weather configuration
 WEATHER_CITY = config_data.get('weather', {}).get('city') or os.getenv('WEATHER_CITY')
