@@ -13,13 +13,34 @@ body {
 }
 
 header {
-    text-align: center;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    justify-content: space-between;
     margin-bottom: 30px;
     padding: 20px;
     background: rgba(30, 30, 46, 0.7);
     border-radius: 10px;
     backdrop-filter: blur(10px);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    text-align: left;
+}
+
+.header-info {
+    text-align: right;
+}
+
+.date {
+    font-size: 2em;
+    margin: 0 0 5px 0;
+    font-weight: bold;
+}
+
+.timestamp {
+    margin: 0;
+    font-size: 0.9em;
+    opacity: 0.8;
+    color: #a0a0a0;
 }
 
 .dashboard-grid {
@@ -82,11 +103,4 @@ header {
     text-align: center;
     margin: 10px 0;
     color: #ffffff;
-}
-
-.timestamp {
-    text-align: center;
-    font-size: 0.9em;
-    opacity: 0.8;
-    color: #a0a0a0;
 }
