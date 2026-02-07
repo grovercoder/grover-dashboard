@@ -6,7 +6,7 @@ import email
 from datetime import datetime
 import requests
 from jinja2 import Environment, FileSystemLoader
-from config import EMAIL_HOST, EMAIL_PORT, EMAIL_USER, EMAIL_PASSWORD, EMAIL_MAILBOXES, WEATHER_API_KEY, WEATHER_CITY, WEATHER_COUNTRY, WEATHER_UNITS, PROJECTS
+from config import EMAIL_HOST, EMAIL_PORT, EMAIL_USER, EMAIL_PASSWORD, EMAIL_MAILBOXES, WEATHER_CITY, WEATHER_LAT, WEATHER_LONG, WEATHER_UNITS, PROJECTS
 
 def get_projects_by_activity(base_path):
     project_list = []
@@ -86,10 +86,14 @@ def get_weather():
         
         # Get coordinates for the city (this is a simplified approach)
         # For a more robust solution, you'd want to use a geocoding API
+        is_metric = WEATHER_UNITS == 'metric'
         params = {
-            'latitude': 51.5074,  # London latitude
-            'longitude': -0.1278,  # London longitude
-            'current': 'temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code'
+            'latitude': WEATHER_LAT,  # London latitude
+            'longitude': WEATHER_LONG,  # London longitude
+            'current': 'temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code',
+            'temperature_unit': 'celsius' if is_metric else 'fahrenheit',
+            'wind_speed_unit': 'kmh' if is_metric else 'mph',
+            'precipitation_unit': 'mm' if is_metric else 'inch'
         }
         
         response = requests.get(url, params=params)
