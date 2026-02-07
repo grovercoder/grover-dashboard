@@ -8,7 +8,7 @@ import email
 from datetime import datetime
 import requests
 from jinja2 import Environment, FileSystemLoader
-from config import EMAIL_ACCOUNTS, WEATHER_CITY, WEATHER_LAT, WEATHER_LONG, WEATHER_UNITS, PROJECTS
+from config import EMAIL_ACCOUNTS, WEATHER_CONFIG, PROJECTS
 
 def get_projects_by_activity(base_path):
     project_list = []
@@ -99,7 +99,7 @@ def get_email_counts():
         # Iterate through all email accounts
         for account in EMAIL_ACCOUNTS:
             # Connect to the email server
-            mail = imaplib.IMAP4_SSL(account.host)
+            mail = imaplib.IMAP4_SSL(account.server)
             mail.login(account.user, account.password)
             
             for mailbox in account.mailboxes:
@@ -151,10 +151,10 @@ def get_weather():
         
         # Get coordinates for the city (this is a simplified approach)
         # For a more robust solution, you'd want to use a geocoding API
-        is_metric = WEATHER_UNITS == 'metric'
+        is_metric = WEATHER_CONFIG.units == 'metric'
         params = {
-            'latitude': WEATHER_LAT,  # London latitude
-            'longitude': WEATHER_LONG,  # London longitude
+            'latitude': WEATHER_CONFIG.lat,  # London latitude
+            'longitude': WEATHER_CONFIG.long,  # London longitude
             'current': 'temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code',
             'temperature_unit': 'celsius' if is_metric else 'fahrenheit',
             'wind_speed_unit': 'kmh' if is_metric else 'mph',
@@ -167,50 +167,31 @@ def get_weather():
         # Extract weather information
         current = data.get('current', {})
         
-        # Map weather code to description (simplified)
-        weather_descriptions = {
-            0: "Clear sky",
-            1: "Mainly clear",
-            2: "Partly cloudy",
-            3: "Overcast",
-            45: "Fog",
-            48: "Depositing rime fog",
-            51: "Light drizzle",
-            53: "Moderate drizzle",
-            55: "Dense drizzle",
-            56: "Light freezing drizzle",
-            57: "Dense freezing drizzle",
-            61: "Slight rain",
-            63: "Moderate rain",
-            65: "Heavy rain",
-            66: "Light freezing rain",
-            67: "Heavy freezing rain",
-            71: "Slight snow fall",
-            73: "Moderate snow fall",
-            75: "Heavy snow fall",
-            77: "Snow grains",
-            80: "Slight rain showers",
-            81: "Moderate rain showers",
-            82: "Violent rain showers",
-            85: "Slight snow showers",
-            86: "Heavy snow showers",
-            95: "Thunderstorm",
-            96: "Thunderstorm with slight hail",
-            99: "Thunderstorm with heavy hail"
-        }
-        
-        return {
-            'city': WEATHER_CITY,
+        # Create WeatherResponse model instance
+        weather_response = {
+            'code': current.get('weather_code', 0),
+            'city': WEATHER_CONFIG.city,
             'temperature': round(current.get('temperature_2m', 0)),
-            'description': weather_descriptions.get(current.get('weather_code', 0), "Unknown"),
             'humidity': current.get('relative_humidity_2m', 0),
             'wind_speed': current.get('wind_speed_10m', 0)
+        }
+        
+        # Use the model to compute derived fields
+        from models import WeatherResponse
+        weather_model = WeatherResponse(**weather_response)
+        
+        return {
+            'city': weather_model.city,
+            'temperature': weather_model.temperature,
+            'description': weather_model.description,
+            'humidity': weather_model.humidity,
+            'wind_speed': weather_model.wind_speed
         }
     
     except Exception as e:
         print(f"Error fetching weather data: {e}")
         return {
-            'city': WEATHER_CITY,
+            'city': WEATHER_CONFIG.city,
             'temperature': 'N/A',
             'description': 'Error fetching data',
             'humidity': 'N/A',
@@ -391,8 +372,8 @@ header {
         'projects': projects,
         'current_time': current_time,
         'date': datetime.now().strftime("%a, %b %d, %Y"),
-        'temp_units': 'C' if WEATHER_UNITS == 'metric' else 'F',
-        'wind_units': 'kph' if WEATHER_UNITS == 'metric' else 'mph'
+        'temp_units': 'C' if WEATHER_CONFIG.units == 'metric' else 'F',
+        'wind_units': 'kph' if WEATHER_CONFIG.units == 'metric' else 'mph'
     }
     
     # Set up Jinja2 environment
