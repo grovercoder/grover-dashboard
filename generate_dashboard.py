@@ -44,24 +44,26 @@ def get_email_counts():
     return email_counts
 
 def get_weather():
-    """Fetch weather data from OpenWeatherMap API"""
+    """Fetch weather data from API-Ninjas Weather API"""
     try:
-        url = f"http://api.openweathermap.org/data/2.5/weather"
+        url = "https://api.api-ninjas.com/v1/weather"
         params = {
-            'q': WEATHER_CITY,
-            'appid': WEATHER_API_KEY,
-            'units': WEATHER_UNITS
+            'city': WEATHER_CITY
         }
         
-        response = requests.get(url, params=params)
+        headers = {
+            'X-Api-Key': WEATHER_API_KEY
+        }
+        
+        response = requests.get(url, params=params, headers=headers)
         data = response.json()
         
         return {
-            'city': data['name'],
-            'temperature': round(data['main']['temp']),
-            'description': data['weather'][0]['description'].title(),
-            'humidity': data['main']['humidity'],
-            'wind_speed': data['wind']['speed']
+            'city': WEATHER_CITY,
+            'temperature': round(data.get('temp', 0)),
+            'description': data.get('cloud_pct', 0),  # API-Ninjas doesn't provide description
+            'humidity': data.get('humidity', 0),
+            'wind_speed': data.get('wind_speed', 0)
         }
     
     except Exception as e:
