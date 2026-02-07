@@ -33,7 +33,7 @@
                 <h2>Weather</h2>
                 <div class="weather-icon">☀️</div>
                 <p><strong>{{ weather.city }}</strong></p>
-                <p>Temperature: {{ weather.temperature }}°{{ 'C' if WEATHER_UNITS == 'metric' else 'F' }}</p>
+                <p>Temperature: {{ weather.temperature }}°{{ temp_units }}</p>
                 <p>Description: {{ weather.description }}</p>
                 <p>Humidity: {{ weather.humidity }}%</p>
                 <p>Wind Speed: {{ weather.wind_speed }} m/s</p>
