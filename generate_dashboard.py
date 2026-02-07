@@ -59,8 +59,11 @@ def get_email_counts():
             status, messages = mail.search(None, 'UNSEEN')
             email_ids = messages[0].split()
             
+            # Get mailbox user from email address
+            mailbox_user = EMAIL_USER.split('@')[0] if '@' in EMAIL_USER else EMAIL_USER
+            
             email_counts.append({
-                'mailbox': mailbox,
+                'mailbox': mailbox_user,
                 'count': len(email_ids)
             })
         
@@ -71,8 +74,10 @@ def get_email_counts():
         print(f"Error fetching email counts: {e}")
         # Return default values if error occurs
         for mailbox in EMAIL_MAILBOXES:
+            # Get mailbox user from email address
+            mailbox_user = EMAIL_USER.split('@')[0] if '@' in EMAIL_USER else EMAIL_USER
             email_counts.append({
-                'mailbox': mailbox,
+                'mailbox': mailbox_user,
                 'count': 0
             })
     
