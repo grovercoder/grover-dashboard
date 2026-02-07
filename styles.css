@@ -1,9 +1,49 @@
+:root {
+  --bg-primary: #0f0c29;
+  --bg-secondary: #302b63;
+  --bg-tertiary: #24243e;
+  --card-bg: rgba(30, 30, 46, 0.7);
+  --card-border: rgba(255, 255, 255, 0.1);
+  --text-primary: #e0e0e0;
+  --text-secondary: #d0d0d0;
+  --text-tertiary: #a0a0a0;
+  --header-bg: rgba(30, 30, 46, 0.7);
+  --header-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  --progress-bg: rgba(255, 255, 255, 0.1);
+  --progress-fill: linear-gradient(90deg, #00c9ff, #92fe9d);
+  --weather-icon-color: #ffffff;
+  --date-font-size: 2em;
+  --timestamp-font-size: 0.9em;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg-primary: #e0e0e0;
+    --bg-secondary: #c0c0c0;
+    --bg-tertiary: #a0a0a0;
+    --card-bg: rgba(255, 255, 255, 0.8);
+    --card-border: rgba(0, 0, 0, 0.1);
+    --text-primary: #303030;
+    --text-secondary: #505050;
+    --text-tertiary: #707070;
+    --header-bg: rgba(255, 255, 255, 0.8);
+    --header-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    --progress-bg: rgba(0, 0, 0, 0.1);
+    --progress-fill: linear-gradient(90deg, #00c9ff, #92fe9d);
+    --weather-icon-color: #303030;
+    --date-font-size: 2em;
+    --timestamp-font-size: 0.9em;
+  }
+}
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 20px;
-    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-    color: #e0e0e0;
+    background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary), var(--bg-tertiary));
+    color: var(--text-primary);
     min-height: 100vh;
 }
 
@@ -19,10 +59,10 @@ header {
     justify-content: space-between;
     margin-bottom: 30px;
     padding: 20px;
-    background: rgba(30, 30, 46, 0.7);
+    background: var(--header-bg);
     border-radius: 10px;
     backdrop-filter: blur(10px);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--header-shadow);
     text-align: left;
 }
 
@@ -31,16 +71,16 @@ header {
 }
 
 .date {
-    font-size: 2em;
+    font-size: var(--date-font-size);
     margin: 0 0 5px 0;
     font-weight: bold;
 }
 
 .timestamp {
     margin: 0;
-    font-size: 0.9em;
+    font-size: var(--timestamp-font-size);
     opacity: 0.8;
-    color: #a0a0a0;
+    color: var(--text-tertiary);
 }
 
 .dashboard-grid {
@@ -51,19 +91,19 @@ header {
 }
 
 .card {
-    background: rgba(30, 30, 46, 0.7);
+    background: var(--card-bg);
     border-radius: 10px;
     padding: 20px;
     backdrop-filter: blur(10px);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: var(--card-shadow);
+    border: 1px solid var(--card-border);
 }
 
 .card h2 {
     margin-top: 0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
     padding-bottom: 10px;
-    color: #ffffff;
+    color: var(--text-primary);
 }
 
 .email-item {
@@ -71,7 +111,7 @@ header {
     justify-content: space-between;
     padding: 8px 0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    color: #d0d0d0;
+    color: var(--text-secondary);
 }
 
 .email-item:last-child {
@@ -79,12 +119,12 @@ header {
 }
 
 .projects-card {
-    background: rgba(30, 30, 46, 0.7);
+    background: var(--card-bg);
     border-radius: 10px;
     padding: 20px;
     backdrop-filter: blur(10px);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: var(--card-shadow);
+    border: 1px solid var(--card-border);
     margin-bottom: 30px;
 }
 
@@ -92,7 +132,7 @@ header {
     margin-top: 0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
     padding-bottom: 10px;
-    color: #ffffff;
+    color: var(--text-primary);
 }
 
 .projects-grid {
@@ -125,7 +165,7 @@ header {
 }
 
 .project-status {
-    color: #a0a0a0;
+    color: var(--text-tertiary);
 }
 
 .project-progress {
@@ -135,7 +175,7 @@ header {
 .progress-bar {
     width: 100%;
     height: 10px;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--progress-bg);
     border-radius: 5px;
     overflow: hidden;
     margin-top: 5px;
@@ -143,7 +183,7 @@ header {
 
 .progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, #00c9ff, #92fe9d);
+    background: var(--progress-fill);
     border-radius: 5px;
 }
 
@@ -151,5 +191,5 @@ header {
     font-size: 3em;
     text-align: center;
     margin: 10px 0;
-    color: #ffffff;
+    color: var(--weather-icon-color);
 }
