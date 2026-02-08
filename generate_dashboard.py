@@ -258,7 +258,8 @@ def get_projects_from_directory():
         })
     
     # Sort projects by last modified time (most recent first)
-    projects.sort(key=lambda x: x['last_modified'], reverse=True)
+    # Handle None values by sorting them last
+    projects.sort(key=lambda x: x['last_modified'] or 0, reverse=True)
     
     return projects
 
@@ -280,7 +281,7 @@ def get_latest_mtime(project_path):
             # Handle cases where files might be deleted/locked during scan
             continue
             
-        return max_mtime
+    return max_mtime
 
 def generate_dashboard():
     """Generate the HTML dashboard"""
