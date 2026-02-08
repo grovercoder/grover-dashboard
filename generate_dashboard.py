@@ -246,19 +246,41 @@ def get_projects_from_directory():
         # Determine project status based on acceptance checklist
         status = get_project_status(item)
         
+        # determine the most recent modification date for the project directory
+        last_updated = get_latest_mtime(item)
         projects.append({
             'name': item.name,
             'project_path': item.resolve().absolute(),
             'status': status,
             'progress': progress,
             'path': item.resolve().absolute(),
-            'last_modified': item.stat().st_mtime
+            'last_modified': last_updated
         })
     
     # Sort projects by last modified time (most recent first)
     projects.sort(key=lambda x: x['last_modified'], reverse=True)
     
     return projects
+
+def get_latest_mtime(project_path):
+    # Get the mtime of the folder itself as a starting point
+    max_mtime = project_path.stat().st_mtime
+    
+    # Recursively check all files
+    for file in project_path.rglob('*'):
+        # Skip hidden files/folders (like .git, .venv, or __pycache__)
+        if any(part.startswith('.') for part in file.parts):
+            continue
+            
+        try:
+            mtime = file.stat().st_mtime
+            if mtime > max_mtime:
+                max_mtime = mtime
+        except OSError:
+            # Handle cases where files might be deleted/locked during scan
+            continue
+            
+        return max_mtime
 
 def generate_dashboard():
     """Generate the HTML dashboard"""
