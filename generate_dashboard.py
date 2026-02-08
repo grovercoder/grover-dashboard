@@ -99,7 +99,7 @@ def get_email_counts():
         # Iterate through all email accounts
         for account in dashboard_config.email:
             # Connect to the email server
-            mail = imaplib.IMAP4_SSL(account.server)
+            mail = imaplib.IMAP4_SSL(account.host)
             mail.login(account.user, account.password)
             
             for mailbox in account.mailboxes:
@@ -180,14 +180,8 @@ def get_weather():
         from models import WeatherResponse
         weather_model = WeatherResponse(**weather_response)
         
-        return {
-            'city': weather_model.city,
-            'temperature': weather_model.temperature,
-            'description': weather_model.description,
-            'humidity': weather_model.humidity,
-            'wind_speed': weather_model.wind_speed
-        }
-    
+        return weather_model
+            
     except Exception as e:
         print(f"Error fetching weather data: {e}")
         return {
