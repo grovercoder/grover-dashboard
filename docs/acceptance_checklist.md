@@ -9,6 +9,7 @@ Last modified: 2026-02-08
 - [X] Mailbox unread count
 - [X] Multiple mailbox accounts supported
 - [X] Project Progress Calculations
-- [ ] Project Status determination
+- [X] Project Status determination
 - [X] Convert .env to .toml with list support
 - [X] Customer projects, and non-research projects are correctly found
+- [ ] Add method to create acceptance_checklist in all projects if needed
