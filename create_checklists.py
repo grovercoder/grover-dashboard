@@ -44,13 +44,13 @@ def create_acceptance_checklist(project_path, last_modified_date):
     docs_dir = project_path / "docs"
     checklist_path = docs_dir / "acceptance_checklist.md"
     
-    # Create docs directory if it doesn't exist
-    docs_dir.mkdir(parents=True, exist_ok=True)
-    
     # Check if checklist already exists
     if checklist_path.exists():
         print(f"Checklist already exists for {project_path.name}")
         return False
+
+    # Create docs directory if it doesn't exist
+    docs_dir.mkdir(parents=True, exist_ok=True)
     
     # Read the example checklist
     example_path = Path(__file__).parent / "docs" / "acceptance_checklist.example.md"

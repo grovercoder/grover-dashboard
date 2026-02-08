@@ -14,4 +14,5 @@ Last modified: 2026-02-08
 - [X] Customer projects, and non-research projects are correctly found
 - [ ] Add method to create acceptance_checklist in all projects if needed
 - [X] Fix "last modified" time determination for the project to scan file contents.
+- [ ] Add copy project path to clipboard option
 
