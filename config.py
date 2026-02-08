@@ -78,10 +78,6 @@ try:
             if project_path == group_path:
                 is_project_group = True
                 break
-            # Also check if it's a subdirectory of a project group
-            # if project_path.is_relative_to(group_path):
-            #     is_project_group = True
-            #     break
         
         if not is_project_group:
             final_project_paths.add(project_path)
