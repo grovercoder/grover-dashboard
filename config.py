@@ -52,6 +52,9 @@ try:
     config_projects = config_data['projects']
     project_paths = set()
 
+    # Keep track of project group paths to exclude them later
+    project_group_paths = set()
+    
     for p in config_projects['project_roots']:
         current = Path(p).resolve()
         if current.exists() and current.is_dir():
@@ -60,11 +63,30 @@ try:
     for p in config_projects['project_groups']:
         current = Path(p)
         if current.exists() and current.is_dir():
+            project_group_paths.add(current.resolve())
             for c in current.iterdir():
                 if c.is_dir() and not c.name.startswith('.'):
                     project_paths.add(c.resolve())
     
-    project_list = list(project_paths)
+    # Remove project group directories from the final project list
+    # This ensures that directories that are project groups themselves are not included
+    final_project_paths = set()
+    for project_path in project_paths:
+        # Check if this path is a project group directory
+        is_project_group = False
+        for group_path in project_group_paths:
+            if project_path == group_path:
+                is_project_group = True
+                break
+            # Also check if it's a subdirectory of a project group
+            if project_path.is_relative_to(group_path):
+                is_project_group = True
+                break
+        
+        if not is_project_group:
+            final_project_paths.add(project_path)
+    
+    project_list = list(final_project_paths)
 
     # Create the full configuration model
     dashboard_config = DashboardConfig(
