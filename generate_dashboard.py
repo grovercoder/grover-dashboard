@@ -184,13 +184,16 @@ def get_weather():
             
     except Exception as e:
         print(f"Error fetching weather data: {e}")
-        return {
-            'city': dashboard_config.weather.city,
-            'temperature': 'N/A',
-            'description': 'Error fetching data',
-            'humidity': 'N/A',
-            'wind_speed': 'N/A'
-        }
+        # Return a default WeatherResponse model
+        from models import WeatherResponse
+        return WeatherResponse(
+            code=0,
+            city=dashboard_config.weather.city,
+            temperature=0,
+            humidity=0,
+            wind_speed=0,
+            description="Error fetching data"
+        )
 
 def get_projects_from_directory():
     """Read projects from ~/Projects directory structure"""
