@@ -97,7 +97,7 @@ def get_email_counts():
     
     try:
         # Iterate through all email accounts
-        for account in EMAIL_ACCOUNTS:
+        for account in dashboard_config.email:
             # Connect to the email server
             mail = imaplib.IMAP4_SSL(account.server)
             mail.login(account.user, account.password)
@@ -124,8 +124,8 @@ def get_email_counts():
     except Exception as e:
         print(f"Error fetching email counts: {e}")
         # Return default values if error occurs
-        if EMAIL_ACCOUNTS:
-            for account in EMAIL_ACCOUNTS:
+        if dashboard_config.email:
+            for account in dashboard_config.email:
                 for mailbox in account.mailboxes:
                     # Get mailbox user from email address
                     mailbox_user = account.user.split('@')[0] if '@' in account.user else account.user
@@ -151,10 +151,10 @@ def get_weather():
         
         # Get coordinates for the city (this is a simplified approach)
         # For a more robust solution, you'd want to use a geocoding API
-        is_metric = WEATHER_CONFIG.units == 'metric'
+        is_metric = dashboard_config.weather.units == 'metric'
         params = {
-            'latitude': WEATHER_CONFIG.lat,  # London latitude
-            'longitude': WEATHER_CONFIG.long,  # London longitude
+            'latitude': dashboard_config.weather.lat,  # London latitude
+            'longitude': dashboard_config.weather.long,  # London longitude
             'current': 'temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code',
             'temperature_unit': 'celsius' if is_metric else 'fahrenheit',
             'wind_speed_unit': 'kmh' if is_metric else 'mph',
@@ -170,7 +170,7 @@ def get_weather():
         # Create WeatherResponse model instance
         weather_response = {
             'code': current.get('weather_code', 0),
-            'city': WEATHER_CONFIG.city,
+            'city': dashboard_config.weather.city,
             'temperature': round(current.get('temperature_2m', 0)),
             'humidity': current.get('relative_humidity_2m', 0),
             'wind_speed': current.get('wind_speed_10m', 0)
@@ -191,7 +191,7 @@ def get_weather():
     except Exception as e:
         print(f"Error fetching weather data: {e}")
         return {
-            'city': WEATHER_CONFIG.city,
+            'city': dashboard_config.weather.city,
             'temperature': 'N/A',
             'description': 'Error fetching data',
             'humidity': 'N/A',
@@ -372,8 +372,8 @@ header {
         'projects': projects,
         'current_time': current_time,
         'date': datetime.now().strftime("%a, %b %d, %Y"),
-        'temp_units': 'C' if WEATHER_CONFIG.units == 'metric' else 'F',
-        'wind_units': 'kph' if WEATHER_CONFIG.units == 'metric' else 'mph'
+        'temp_units': 'C' if dashboard_config.weather.units == 'metric' else 'F',
+        'wind_units': 'kph' if dashboard_config.weather.units == 'metric' else 'mph'
     }
     
     # Set up Jinja2 environment
