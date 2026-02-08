@@ -78,7 +78,7 @@
                             <i class="fas fa-copy"></i>
                         </button>
                     </div>
-                    <div class="project-status status-{{ project.status | lower }}" title="Last Modified: {{project.last_modified}}">{{ project.status }}</div>
+                    <div class="project-status status-{{ project.status | lower }}" title="Last Modified: {{ project.last_modified | strftime('%Y-%m-%d %H:%M') }}">{{ project.status }}</div>
                     <div class="project-progress">
                         {{ project.progress }}{{ '%' if project.progress is number else '' }}
                     </div>
