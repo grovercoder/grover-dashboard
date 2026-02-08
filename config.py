@@ -67,7 +67,6 @@ try:
     project_list = list(project_paths)
 
     # Create the full configuration model
-    # dashboard_config = DashboardConfig(**config_data)
     dashboard_config = DashboardConfig(
         weather = weather_config,
         email = accounts,
