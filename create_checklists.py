@@ -40,10 +40,11 @@ def get_project_list():
     """Get the list of projects from the dashboard configuration"""
     projects = []
     
+    # Process research projects
     for item in dashboard_config.projects:
         if not item.exists():
             continue
-            
+
         # determine the most recent modification date for the project directory
         last_updated = get_latest_mtime(item)
         projects.append({
