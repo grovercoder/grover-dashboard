@@ -240,10 +240,6 @@ def get_projects_from_directory():
             continue
 
         
-        # Check if it's a git repository to determine if it's active
-        git_path = item / ".git"
-        is_active = git_path.exists()
-        
         # Calculate progress
         progress = get_progress(item)
         

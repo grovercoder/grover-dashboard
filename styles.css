@@ -15,6 +15,10 @@
   --weather-icon-color: #ffffff;
   --date-font-size: 2em;
   --timestamp-font-size: 0.9em;
+
+  --status-green: #92fe9d;   /* Great for dark */
+  --status-red: #ff5f5f;     /* Brighter red for dark */
+  --status-warning: #ffca28; /* For "stale" or "unknown" */
 }
 
 @media (prefers-color-scheme: light) {
@@ -35,6 +39,10 @@
     --weather-icon-color: #303030;
     --date-font-size: 2em;
     --timestamp-font-size: 0.9em;
+
+    --status-green: #1b8a25;   /* Darker green for light bg */
+    --status-red: #c62828;     /* Deeper red for light bg */
+    --status-warning: #b38600; /* Darker amber */
   }
 }
 
@@ -183,7 +191,14 @@ header {
 
 .project-status {
     color: var(--text-tertiary);
+
+    &.status-active    { color: var(--status-green); }
+    &.status-dormant   { color: var(--text-secondary); } /* Grayish/Sleepy */
+    &.status-stale     { color: var(--status-warning); }   /* Amber/Warning */
+    &.status-abandoned { color: var(--status-red); }
+    &.status-unknown   { color: var(--text-tertiary); }
 }
+
 
 .project-progress {
     text-align: right;

@@ -75,7 +75,7 @@
                     <div class="project-name">
                         <a href="vscode://file{{ project.project_path }}" title="{{project.path}}">{{ project.name }}</a>
                     </div>
-                    <div class="project-status">{{ project.status }}</div>
+                    <div class="project-status status-{{ project.status | lower }}">{{ project.status }}</div>
                     <div class="project-progress">
                         {{ project.progress }}{{ '%' if project.progress is number else '' }}
                     </div>
