@@ -1,4 +1,7 @@
 # Dashboard Acceptance
+
+Last modified: 2023-04-15
+
 - [X] Template creation
 - [X] Weather Reporting
 - [X] Weather Icon matches conditions
@@ -9,4 +12,3 @@
 - [ ] Project Status determination
 - [X] Convert .env to .toml with list support
 - [X] Customer projects, and non-research projects are correctly found
-- Last modified: 2023-04-15
