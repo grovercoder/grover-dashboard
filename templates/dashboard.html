@@ -74,7 +74,7 @@
                 <div class="project-item">
                     <div class="project-name">
                         <a href="vscode://file{{ project.project_path }}" title="{{project.path}}">{{ project.name }}</a>
-                        <button class="copy-button" onclick="copyToClipboard('{{ project.project_path }}')" title="Copy path to clipboard">
+                        <button class="copy-button" onclick="copyToClipboard('{{ project.project_path }}')" title="Copy path to clipboard: {{project.project_path}}">
                             <i class="fas fa-copy"></i>
                         </button>
                     </div>

@@ -187,6 +187,10 @@ header {
             color: var(--text-primary);
         }
     }
+
+    .copy-button {
+        margin-left: 1em;
+    }
 }
 
 .project-status {
