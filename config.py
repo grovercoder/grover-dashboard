@@ -36,9 +36,43 @@ try:
         if isinstance(email_data, dict):
             # Convert single email to list
             config_data['email'] = [email_data]
+
+    # weather configuration
+    print('getting weather config')
+    weather_config = WeatherConfig(**config_data['weather'])
     
+    # email accounts
+    print('getting email config')
+    accounts = []
+    for acct in config_data["email"]:
+        accounts.append(EmailAccount(**acct))
+
+    # project listings
+    print('getting projects config')
+    config_projects = config_data['projects']
+    project_paths = set()
+
+    for p in config_projects['project_roots']:
+        current = Path(p).resolve()
+        if current.exists() and current.is_dir():
+            project_paths.add(current)
+
+    for p in config_projects['project_groups']:
+        current = Path(p)
+        if current.exists() and current.is_dir():
+            for c in current.iterdir():
+                if c.is_dir() and not c.name.startswith('.'):
+                    project_paths.add(c.resolve())
+    
+    project_list = list(project_paths)
+
     # Create the full configuration model
-    dashboard_config = DashboardConfig(**config_data)
+    # dashboard_config = DashboardConfig(**config_data)
+    dashboard_config = DashboardConfig(
+        weather = weather_config,
+        email = accounts,
+        projects = project_list
+    )
     
     # Extract individual components
     EMAIL_ACCOUNTS = dashboard_config.email

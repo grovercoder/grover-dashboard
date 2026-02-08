@@ -8,7 +8,7 @@ import email
 from datetime import datetime
 import requests
 from jinja2 import Environment, FileSystemLoader
-from config import EMAIL_ACCOUNTS, WEATHER_CONFIG, PROJECTS
+from config import dashboard_config
 
 def get_projects_by_activity(base_path):
     project_list = []
