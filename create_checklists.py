@@ -14,27 +14,7 @@ import argparse
 sys.path.insert(0, str(Path(__file__).parent))
 
 from config import dashboard_config
-
-def get_latest_mtime(project_path):
-    """Get the most recent modification time for a project directory"""
-    # Get the mtime of the folder itself as a starting point
-    max_mtime = project_path.stat().st_mtime
-    
-    # Recursively check all files
-    for file in project_path.rglob('*'):
-        # Skip hidden files/folders (like .git, .venv, or __pycache__)
-        if any(part.startswith('.') for part in file.parts):
-            continue
-            
-        try:
-            mtime = file.stat().st_mtime
-            if mtime > max_mtime:
-                max_mtime = mtime
-        except OSError:
-            # Handle cases where files might be deleted/locked during scan
-            continue
-            
-    return max_mtime
+from generate_dashboard import get_latest_mtime
 
 def get_project_list():
     """Get the list of projects from the dashboard configuration"""
