@@ -94,37 +94,69 @@ def create_acceptance_checklist(project_path, last_modified_date):
     print(f"Created checklist for {project_path.name}")
     return True
 
-def main(dry_run=True):
-    """Main function to process all projects"""
-    print("Scanning projects for missing acceptance checklists...")
-    
-    projects = get_project_list()
-    
-    if not projects:
-        print("No projects found.")
-        return
-    
-    created_count = 0
-    
-    for project in projects:
-        project_path = project['path']
-        last_modified_date = datetime.fromtimestamp(project['last_modified'])
+def main(project_path=None, process_all=False):
+    """Main function to process projects"""
+    if project_path:
+        # Process a specific project
+        project_path = Path(project_path).resolve()
+        if not project_path.exists():
+            print(f"Project path does not exist: {project_path}")
+            return
+        
+        # Get the last modified time for this specific project
+        last_modified_date = datetime.fromtimestamp(get_latest_mtime(project_path))
         
         try:
             if create_acceptance_checklist(project_path, last_modified_date):
-                created_count += 1
+                print(f"Created checklist for {project_path.name}")
+            else:
+                print(f"No checklist created for {project_path.name}")
         except Exception as e:
             print(f"Error processing {project_path.name}: {e}")
-    
-    if dry_run:
-        print(f"\n(Dry run) Would have created {created_count} checklists.")
-    else:
+    elif process_all:
+        # Process all projects
+        print("Scanning all projects for missing acceptance checklists...")
+        
+        projects = get_project_list()
+        
+        if not projects:
+            print("No projects found.")
+            return
+        
+        created_count = 0
+        
+        for project in projects:
+            project_path = project['path']
+            last_modified_date = datetime.fromtimestamp(project['last_modified'])
+            
+            try:
+                if create_acceptance_checklist(project_path, last_modified_date):
+                    created_count += 1
+            except Exception as e:
+                print(f"Error processing {project_path.name}: {e}")
+        
         print(f"\nCreated {created_count} checklists.")
+    else:
+        # Default behavior: process the current directory
+        current_dir = Path('.').resolve()
+        print(f"Processing current directory: {current_dir}")
+        
+        # Get the last modified time for current directory
+        last_modified_date = datetime.fromtimestamp(get_latest_mtime(current_dir))
+        
+        try:
+            if create_acceptance_checklist(current_dir, last_modified_date):
+                print(f"Created checklist for {current_dir.name}")
+            else:
+                print(f"No checklist created for {current_dir.name}")
+        except Exception as e:
+            print(f"Error processing {current_dir.name}: {e}")
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Create acceptance checklists for projects')
-    parser.add_argument('--no-dry-run', action='store_true', help='Actually create the files instead of dry run')
+    parser.add_argument('project_path', nargs='?', help='Specific project path to process (default: current directory)')
+    parser.add_argument('--all', action='store_true', help='Process all projects')
     
     args = parser.parse_args()
     
-    main(dry_run=not args.no_dry_run)
+    main(project_path=args.project_path, process_all=args.all)
