@@ -33,20 +33,26 @@
             <div class="card weather">
                 <h2>Weather</h2>
                 <div class="weather-info">
-                    <div class="left">
-                        <div class="weather-icon">
+                    <p><strong>{{ weather.city }}</strong></p>
+                    <div class="detail">
+                        <span class="weather-icon">
                             <i class="fas {{ weather.icon_class }}"></i>
-                        </div>
-                        <div class="temperature">
-                            {{ weather.temperature }}°{{ temp_units }}
-                        </div>
+                        </span>
+                        <span class="temperature">
+                            {{ weather.temperature | int }}°{{ temp_units }}
+                        </span>
                     </div>
-                    <div class="right">
-                        <p><strong>{{ weather.city }}</strong></p>
-                        <p>Description: {{ weather.description }}</p>
-                        <p>Humidity: {{ weather.humidity }}%</p>
-                        <p>Wind Speed: {{ weather.wind_speed }} {{ wind_units }} </p>
-                    </div>
+                    <p>{{ weather.description }}</p>
+                    <p>
+                        <span class="humidity">
+                            <i class="fas fa-droplet"></i> {{ weather.humidity }}%
+                        </span>
+                        &nbsp;&nbsp;
+                        <span class="wind">
+                            <i class="fas fa-wind"></i> {{ weather.wind_speed }} {{ wind_units }}
+                        </span>
+                    </p>
+                
                 </div>
             </div>
         </div>

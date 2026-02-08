@@ -205,26 +205,24 @@ header {
 }
 
 .weather-info {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1em;
+    text-align: center;
     padding: 0;
 }
-.weather-info .left {
+.weather-info .col2 {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 100px 100px;
+    gap: 1em;
     align-items: center;
+    justify-content: space-around;
 }
 .weather-info .temperature {
-    font-size: 3.5em;
+    font-size: 3em;
 }
 .weather-info .weather-icon {
     font-size: 3em;
     text-align: center;
-    margin: 10px 0;
+    /* margin: 10px 0; */
     color: var(--weather-icon-color);
 }
-.weather-info .right p { 
-    padding: 0; 
-    margin: 0.2em 0;
-}
+
+

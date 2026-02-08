@@ -231,13 +231,12 @@ def generate_dashboard():
     """Generate the HTML dashboard"""
     
     # Create dist folder if it doesn't exist
-    dist_folder = 'dist'
-    if not os.path.exists(dist_folder):
-        os.makedirs(dist_folder)
+    dist_folder = Path(__file__).parent / 'dist'
+    dist_folder.mkdir(parents=True, exist_ok=True)
     
     # Copy styles.css to dist folder
-    styles_source = 'styles.css'
-    styles_dest = os.path.join(dist_folder, 'styles.css')
+    styles_source = Path(__file__).parent / 'styles.css'
+    styles_dest = dist_folder / 'styles.css'
     
     if os.path.exists(styles_source):
         with open(styles_source, 'r') as f:
@@ -354,18 +353,18 @@ header {
     }
     
     # Set up Jinja2 environment
-    env = Environment(loader=FileSystemLoader('templates'))
+    template_dir = Path(__file__).parent / "templates"
+    env = Environment(loader=FileSystemLoader(template_dir.resolve()))
     template = env.get_template('dashboard.html')
     
     # Render template
     html_output = template.render(template_data)
     
     # Write to file in dist folder
-    output_path = os.path.join(dist_folder, 'dashboard.html')
-    with open(output_path, 'w') as f:
-        f.write(html_output)
+    output_path = dist_folder / 'dashboard.html'
+    output_path.write_text(html_output)
     
-    print(f"Dashboard generated successfully! File saved to {output_path}")
+    print(f"Dashboard generated successfully! File saved to {str(output_path)}")
 
 if __name__ == '__main__':
     generate_dashboard()
