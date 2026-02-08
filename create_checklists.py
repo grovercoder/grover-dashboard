@@ -63,10 +63,13 @@ def create_acceptance_checklist(project_path, last_modified_date):
     with open(example_path, 'r') as f:
         example_content = f.read()
     
+    # Replace the project name in the example content
+    updated_content = example_content.replace('[Project Name]', project_path.name)
+    
     # Replace the last modified date with the actual date
     # Format: Last modified: YYYY-MM-DD
     formatted_date = last_modified_date.strftime("%Y-%m-%d")
-    updated_content = re.sub(r'Last modified: \d{4}-\d{2}-\d{2}', f'Last modified: {formatted_date}', example_content)
+    updated_content = re.sub(r'Last modified: \d{4}-\d{2}-\d{2}', f'Last modified: {formatted_date}', updated_content)
     
     # Write the new checklist
     with open(checklist_path, 'w') as f:
