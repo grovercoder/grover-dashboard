@@ -1,12 +1,12 @@
 # Dashboard Acceptance
 - [X] Template creation
 - [X] Weather Reporting
-- [ ] Weather Icon matches conditions
-- [ ] Better weather representation (re-organize to be a more concise card)
+- [X] Weather Icon matches conditions
+- [X] Better weather representation (re-organize to be a more concise card)
 - [X] Mailbox unread count
-- [ ] Multiple mailbox accounts supported
+- [X] Multiple mailbox accounts supported
 - [X] Project Progress Calculations
 - [ ] Project Status determination
-- [ ] Convert project locations to .env variables
-- [ ] Customer projects, and non-research projects are correctly found
+- [X] Convert .env to .toml with list support
+- [X] Customer projects, and non-research projects are correctly found
 

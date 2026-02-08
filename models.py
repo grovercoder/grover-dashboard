@@ -6,7 +6,7 @@ class EmailAccount(BaseModel):
     name: str
     user: str
     password: str
-    server: str = "imap.gmail.com"
+    host: str 
     port: int = 993
     use_ssl: bool = True
     mailboxes: List[str] = ["INBOX"]

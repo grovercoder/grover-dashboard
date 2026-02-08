@@ -47,8 +47,8 @@ def get_projects_by_activity(base_path):
 def get_progress(project_path):
     """Calculate project progress based on multiple methods"""
     # 1. Tier 1: Python Acceptance Tests
-    test_file = os.path.join(project_path, "tests/acceptance.py")
-    if os.path.exists(test_file):
+    test_file = project_path / "tests/acceptance.py"
+    if test_file.exists():
         try:
             # Run pytest quietly, just collecting results
             # We use --collect-only first to see total tests, then run to see passes
@@ -75,16 +75,17 @@ def get_progress(project_path):
             pass # Fall back to next tier if pytest fails
 
     # 2. Tier 2: Markdown Checklist
-    checklist_path = os.path.join(project_path, "docs/acceptance_checklist.md")
-    if os.path.exists(checklist_path):
+    checklist_path = project_path / "docs/acceptance_checklist.md"
+    if checklist_path.exists():
         try:
             with open(checklist_path, 'r') as f:
                 content = f.read()
                 done = len(re.findall(r'\[x\]', content, re.IGNORECASE))
                 todo = len(re.findall(r'\[ \]', content, re.IGNORECASE))
-                
+                avg = round((done / (done + todo)) * 100, 2) if done + todo > 0 else 0
+                print(f'>> checklist_path: {str(checklist_path)} : avg: {avg}')
                 if (done + todo) > 0:
-                    return round((done / (done + todo)) * 100, 2)
+                    return avg
         except Exception:
             pass
 
@@ -199,48 +200,27 @@ def get_projects_from_directory():
     """Read projects from ~/Projects directory structure"""
     projects = []
     
-    # Define the projects directory
-    projects_dir = os.path.expanduser("~/Projects")
-    
-    # Check if the directory exists
-    if not os.path.exists(projects_dir):
-        print(f"Projects directory not found: {projects_dir}")
-        return projects
-    
-    # Process customer projects
-    customers_dir = os.path.join(projects_dir, "customers")
-    if os.path.exists(customers_dir):
-        customer_projects = get_projects_by_activity(customers_dir)
-        for item in customer_projects:
-            projects.append({
-                'name': item['name'],
-                'progress': 0,  # Customer projects typically don't have progress
-                'status': 'Customer Project',
-                'path': str(item['path']),
-                'last_modified': item['last_mod']
-            })
-    
     # Process research projects
-    research_dir = os.path.join(projects_dir, "research")
-    if os.path.exists(research_dir):
-        research_projects = get_projects_by_activity(research_dir)
-        for item in research_projects:
-            item_path = str(item['path'])
-            # Check if it's a git repository to determine if it's active
-            git_path = os.path.join(item_path, ".git")
-            is_active = os.path.exists(git_path)
-            
-            # Calculate progress
-            progress = get_progress(item_path)
-            
-            projects.append({
-                'name': item['name'],
-                'project_path': item_path,
-                'progress': progress,
-                'status': 'Research Project' + (' (Active)' if is_active else ' (Inactive)'),
-                'path': item_path,
-                'last_modified': item['last_mod']
-            })
+    for item in dashboard_config.projects:
+        if not item.exists():
+            continue
+
+        
+        # Check if it's a git repository to determine if it's active
+        git_path = item / ".git"
+        is_active = git_path.exists()
+        
+        # Calculate progress
+        progress = get_progress(item)
+        
+        projects.append({
+            'name': item.name,
+            'project_path': item.resolve().absolute(),
+            'status': 'Research Project' + (' (Active)' if is_active else ' (Inactive)'),
+            'progress': progress,
+            'path': item.resolve().absolute(),
+            'last_modified': item.stat().st_mtime
+        })
     
     # Sort projects by last modified time (most recent first)
     projects.sort(key=lambda x: x['last_modified'], reverse=True)

@@ -30,16 +30,24 @@
             </div>
 
             <!-- Weather Section -->
-            <div class="card">
+            <div class="card weather">
                 <h2>Weather</h2>
-                <div class="weather-icon">
-                    <i class="fas {{ weather.icon_class }}"></i>
+                <div class="weather-info">
+                    <div class="left">
+                        <div class="weather-icon">
+                            <i class="fas {{ weather.icon_class }}"></i>
+                        </div>
+                        <div class="temperature">
+                            {{ weather.temperature }}°{{ temp_units }}
+                        </div>
+                    </div>
+                    <div class="right">
+                        <p><strong>{{ weather.city }}</strong></p>
+                        <p>Description: {{ weather.description }}</p>
+                        <p>Humidity: {{ weather.humidity }}%</p>
+                        <p>Wind Speed: {{ weather.wind_speed }} {{ wind_units }} </p>
+                    </div>
                 </div>
-                <p><strong>{{ weather.city }}</strong></p>
-                <p>Temperature: {{ weather.temperature }}°{{ temp_units }}</p>
-                <p>Description: {{ weather.description }}</p>
-                <p>Humidity: {{ weather.humidity }}%</p>
-                <p>Wind Speed: {{ weather.wind_speed }} {{ wind_units }} </p>
             </div>
         </div>
 
@@ -59,7 +67,7 @@
                 {% for project in projects %}
                 <div class="project-item">
                     <div class="project-name">
-                        <a href="vscode://file{{ project.project_path }}">{{ project.name }}</a>
+                        <a href="vscode://file{{ project.project_path }}" title="{{project.path}}">{{ project.name }}</a>
                     </div>
                     <div class="project-status">{{ project.status }}</div>
                     <div class="project-progress">
