@@ -92,6 +92,40 @@ def get_progress(project_path):
     # 3. Tier 3: Unknown
     return "Unknown"
 
+def get_project_status(project_path):
+    """Determine project status based on last modified date in acceptance checklist"""
+    checklist_path = project_path / "docs/acceptance_checklist.md"
+    
+    if not checklist_path.exists():
+        return "Unknown"
+    
+    try:
+        with open(checklist_path, 'r') as f:
+            content = f.read()
+            
+        # Look for the Last modified line
+        last_modified_match = re.search(r'Last modified:\s*(\d{4}-\d{2}-\d{2})', content)
+        
+        if not last_modified_match:
+            return "Unknown"
+            
+        last_modified_str = last_modified_match.group(1)
+        last_modified_date = datetime.strptime(last_modified_str, '%Y-%m-%d')
+        current_date = datetime.now()
+        days_diff = (current_date - last_modified_date).days
+        
+        if days_diff < 30:
+            return "Active"
+        elif days_diff < 180:
+            return "Dormant"
+        elif days_diff < 365:
+            return "Stale"
+        else:
+            return "Abandoned"
+            
+    except Exception:
+        return "Unknown"
+
 def get_email_counts():
     """Fetch email counts from multiple mailboxes across all email accounts"""
     email_counts = []
@@ -213,10 +247,13 @@ def get_projects_from_directory():
         # Calculate progress
         progress = get_progress(item)
         
+        # Determine project status based on acceptance checklist
+        status = get_project_status(item)
+        
         projects.append({
             'name': item.name,
             'project_path': item.resolve().absolute(),
-            'status': 'Research Project' + (' (Active)' if is_active else ' (Inactive)'),
+            'status': status,
             'progress': progress,
             'path': item.resolve().absolute(),
             'last_modified': item.stat().st_mtime
