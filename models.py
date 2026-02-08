@@ -9,6 +9,7 @@ class EmailAccount(BaseModel):
     server: str = "imap.gmail.com"
     port: int = 993
     use_ssl: bool = True
+    mailboxes: List[str]
     
     def __str__(self):
         return f"{self.name} ({self.user})"
@@ -23,13 +24,12 @@ class WeatherResponse(BaseModel):
     code: int
     city: str
     temperature: float
-    humidity: str
-    wind_speed: str
-    # These must be Optional because they are generated inside the model
-    description: Optional[str] = None
-    icon_class: Optional[str] = None
+    humidity: float
+    wind_speed: float
     wind_units: str = "KPH"
     temp_units: str = "C"
+    description: Optional[str] = None
+    icon_class: Optional[str] = None
 
     @model_validator(mode="after")
     def compute_derived_fields(self) -> "WeatherResponse":
