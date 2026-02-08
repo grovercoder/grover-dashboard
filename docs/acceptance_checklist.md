@@ -9,4 +9,4 @@
 - [ ] Project Status determination
 - [X] Convert .env to .toml with list support
 - [X] Customer projects, and non-research projects are correctly found
-- [ ] Last modified: 2023-04-15
+- Last modified: 2023-04-15
