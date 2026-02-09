@@ -58,9 +58,9 @@ Projects are specified in the `config.toml` file.  "project_roots" are a list of
 
 Progress is determined in one of two ways:
 
-2. a `docs/acceptance_checklist.md` file exits.  The "checked" items are used to calculate the progress. (See [docs/acceptance_checklist.example.md](docs/acceptance_checklist.example.md))
-1. a `tests/acceptance.py` unit testing file exists in the project directory.  This unit test file indicates what tests must pass to consider the project completed.  (Only applies to Python projects with unit testing)
-3. If neither option is found "Unknown" is returned.  Any project marked Unknown is an indicator that project should be updated or pruned.
+1. a `docs/acceptance_checklist.md` file exits.  The "checked" items are used to calculate the progress. (See [docs/acceptance_checklist.example.md](docs/acceptance_checklist.example.md))
+1. a `tests/acceptance.py` unit testing file exists in the project directory.  This unit test file indicates what tests must pass to consider the project completed.  (Only applies to Python projects with unit testing) (NOTE: this option has not been fully tested/implemented yet.)
+1. If neither option is found "Unknown" is returned.  Any project marked Unknown is an indicator that project should be updated or pruned.
 
 ### Project Status
 
