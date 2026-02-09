@@ -80,6 +80,8 @@ The date used is as follows:
 - The "Last modified:" value from the acceptance_checklist.md file for the project, if available
 - The maximum date value from these items is used
 
+This calculated project last modified value is used for sorting the projects as well, from most recently changed to oldest changed.
+
 ## Acceptance Checklists
 
 To add the acceptance checklist file to all of your projects at once, run:
