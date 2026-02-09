@@ -52,15 +52,49 @@ Eventually I'd like to expand this to include tracking my finances, appointments
 
 A project is just a working directory for something.  This could be a python application, a book, a graphic or video project, or whatever else you want.
 
-Projects are currently hard coded to look for `$HOME/Projects/customers`, and `$HOME/Projects/research`.  The sub directories of these locations are candidates to be considered a project.
+Projects are specified in the `config.toml` file.  "project_roots" are a list of specific project directories you wish to track.  "project_groups" are directories that contain project directories.  If all your projects are in a `/home/USERNAME/coding/research` folder, then you only need that one group entry.  Practical use might also include specific directories in "project_roots" if you have projects outside your grouping folder.  For example `/home/USERNAME/Tools/grover-dashboard`.
 
-### Progress
+### Project Progress
 
 Progress is determined in one of two ways:
 
-1. a `tests/acceptance.py` unit testing file exists in the project directory.  This unit test file indicates what tests must pass to consider the project completed.  (Only applies to Python projects with unit testing)
 2. a `docs/acceptance_checklist.md` file exits.  The "checked" items are used to calculate the progress. (See [docs/acceptance_checklist.example.md](docs/acceptance_checklist.example.md))
+1. a `tests/acceptance.py` unit testing file exists in the project directory.  This unit test file indicates what tests must pass to consider the project completed.  (Only applies to Python projects with unit testing)
 3. If neither option is found "Unknown" is returned.  Any project marked Unknown is an indicator that project should be updated or pruned.
 
+### Project Status
+
+A project's status is determined by the "age" of the project's last modified date.
+
+|Status|Notes|
+|---|---|
+|Active|updated less than a month ago|
+|Dormant|updated between one month and six months ago|
+|Stale|updated between six months and 1 year ago|
+|Abandoned|updated over a year ago|
+
+The date used is as follows:
+
+- The most recent git commit date, if git is available
+- The most recent file modified date for the project files (ignoring the acceptance_checklist.md file due to possible bulk update scenarios)
+- The "Last modified:" value from the acceptance_checklist.md file for the project, if available
+- The maximum date value from these items is used
+
+## Acceptance Checklists
+
+To add the acceptance checklist file to all of your projects at once, run:
+
+```
+# change into this project's working directory
+cd grover-dashboard
+
+# add the checklist file to all projects
+uv run create_checklists.py --all
+
+# add the checklist file to a single project
+uv run create_checklists.py /path/to/project
+```
+
+The `docs/acceptance_checklist.example.md` file is used as a template.
 
 
