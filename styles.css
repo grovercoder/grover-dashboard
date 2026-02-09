@@ -170,6 +170,10 @@ header {
         color: var(--text-tertiary);
 
         &.status-active { color: var(--status-green); }
+        &.status-dormant { color: var(--text-tertiary); }
+        &.status-stale { color: var(--status-warning); }
+        &.status-abandoned { color: var(--status-red); }
+        &.status-unknown { color: var(--text-tertiary); }
     }
 
     .project-name-wrapper {
