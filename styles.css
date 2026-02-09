@@ -151,77 +151,96 @@ header {
     color: var(--text-primary);
 }
 
-.projects-grid {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 2fr;
-    gap: 10px;
-}
+.card.project-item { 
+    margin-bottom: 0.5em; 
 
-.project-header {
-    display: contents;
-}
-
-.project-header > div {
-    padding: 10px;
-    font-weight: bold;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    &:hover {
+        background-color: var(--card-border);
+    }
 }
 
 .project-item {
-    display: contents;
-}
-
-.project-item > div {
+    display: flex;
+    flex-wrap: wrap; 
+    align-items: center;
     padding: 10px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
+    gap: 10px; /* Space between the wrapper, button, and bar */
 
-.project-name {
-    font-weight: bold;
+    .project-status {
+        color: var(--text-tertiary);
 
-    a {
+        &.status-active { color: var(--status-green); }
+    }
+
+    .project-name-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex: 0 0 300px; /* This locks the first column size */
+        min-width: 0;    /* Allows the name inside to truncate */
+    }
+
+    .project-name {
+        flex: 1;         /* Fills the remaining 300px */
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
         color: var(--text-secondary);
         text-decoration: none;
-
-        &:hover {
-            color: var(--text-primary);
-        }
+        
+        &:hover { color: var(--text-primary); }    
     }
 
     .copy-button {
-        margin-left: 1em;
+        flex-shrink: 0;
+        width: 30px;     /* Optional: lock button width for even more precision */
+        text-align: center;
+        background-color: transparent;
+        color: var(--text-tertiary);
+        border: none;
+        cursor: pointer;
+
+        &:hover {
+            color: var(--status-green);
+        }
+    }
+    
+    .progress-bar {
+        flex: 0 0 100px;
+        height: 10px;
+        background: var(--progress-bg);
+        border-radius: 5px;
+        overflow: hidden;
+     
+        .progress-fill {
+            height: 100%;
+            /* Ensure this variable is defined or use a fallback color */
+            background: var(--progress-fill, #4caf50); 
+            border-radius: 5px;
+            transition: width 0.3s ease;
+        }
+    }
+
+    /* Responsive: Progress bar drops down */
+    @media (max-width: 600px) {
+        .project-name-wrapper {
+            flex: 1;     /* Let it grow to fill the screen on mobile */
+        }
+        
+        .progress-bar {
+            flex: 0 0 100%; 
+            /* Align under name */
+            /* margin-left: 28px;  */
+            width: calc(100% - 28px);
+        }
     }
 }
 
-.project-status {
-    color: var(--text-tertiary);
-
-    &.status-active    { color: var(--status-green); }
-    &.status-dormant   { color: var(--text-secondary); } /* Grayish/Sleepy */
-    &.status-stale     { color: var(--status-warning); }   /* Amber/Warning */
-    &.status-abandoned { color: var(--status-red); }
-    &.status-unknown   { color: var(--text-tertiary); }
-}
 
 
-.project-progress {
+/* .project-progress {
     text-align: right;
-}
-
-.progress-bar {
-    width: 100%;
-    height: 10px;
-    background: var(--progress-bg);
-    border-radius: 5px;
-    overflow: hidden;
-    margin-top: 5px;
-}
-
-.progress-fill {
-    height: 100%;
-    background: var(--progress-fill);
-    border-radius: 5px;
-}
+} */
 
 .weather-info {
     text-align: center;
@@ -245,3 +264,22 @@ header {
 }
 
 
+@media (max-width: 768px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr; /* Stack cards vertically */
+    }
+
+    header {
+        grid-template-columns: 1fr; /* Stack Date and Timestamp vertically */
+        text-align: center;
+    }
+
+    .header-info {
+        text-align: center;
+        margin-top: 10px;
+    }
+
+    .projects-header {
+        grid-template-columns: 1fr;
+    }
+}

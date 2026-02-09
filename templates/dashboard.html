@@ -18,17 +18,6 @@
         </header>
 
         <div class="dashboard-grid">
-            <!-- Email Section -->
-            <div class="card">
-                <h2>Email Notifications</h2>
-                {% for email_count in email_counts %}
-                <div class="email-item">
-                    <span>{{ email_count.mailbox }}</span>
-                    <span><strong>{{ email_count.count }}</strong></span>
-                </div>
-                {% endfor %}
-            </div>
-
             <!-- Weather Section -->
             <div class="card weather">
                 <h2>Weather</h2>
@@ -55,6 +44,17 @@
                 
                 </div>
             </div>
+
+            <!-- Email Section -->
+            <div class="card">
+                <h2>Email Notifications</h2>
+                {% for email_count in email_counts %}
+                <div class="email-item">
+                    <span>{{ email_count.mailbox }}</span>
+                    <span><strong>{{ email_count.count }}</strong></span>
+                </div>
+                {% endfor %}
+            </div>
         </div>
 
         <!-- Projects Section -->
@@ -64,31 +64,34 @@
                 <small>{{ projects | length }} Projects</small>
             </div>
             <div class="projects-grid">
-                <div class="project-header">
-                    <div class="project-name">Name</div>
-                    <div class="project-status">Status</div>
-                    <div class="project-progress">Progress</div>
-                    <div class="project-bar">Bar</div>
-                </div>
                 {% for project in projects %}
-                <div class="project-item">
+                <div class="card project-item">
+                    <i class="fas fa-circle project-status status-{{ project.status | lower }}"></i>
+                    <button class="copy-button" onclick="copyToClipboard('{{ project.project_path }}')">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                    <div class="project-name-wrapper">
+                        <a class="project-name" href="vscode://file{{ project.project_path }}" title="{{project.path}}">{{ project.name }}</a>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: {{ project.progress }}%"></div>
+                    </div>
+                </div>
+                
+                {% endfor %}
+
+                {#
+                    <!-- <div class="project-status status-{{ project.status | lower }}" title="Last Modified: {{ project.last_modified_string }}">
+                    </div>
                     <div class="project-name">
                         <a href="vscode://file{{ project.project_path }}" title="{{project.path}}">{{ project.name }}</a>
-                        <button class="copy-button" onclick="copyToClipboard('{{ project.project_path }}')" title="Copy path to clipboard: {{project.project_path}}">
-                            <i class="fas fa-copy"></i>
-                        </button>
                     </div>
-                    <div class="project-status status-{{ project.status | lower }}" title="Last Modified: {{ project.last_modified_string }}">{{ project.status }}</div>
                     <div class="project-progress">
                         {{ project.progress }}{{ '%' if project.progress is number else '' }}
                     </div>
                     <div class="project-bar">
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: {{ project.progress if project.progress is number else 0 }}%"></div>
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
+                    </div> -->
+                #}
             </div>
         </div>
         

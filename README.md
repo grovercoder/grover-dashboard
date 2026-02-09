@@ -36,7 +36,7 @@ A Python-based personal dashboard that generates an HTML file every hour with:
 6. Add a cron job to periodically call this process (usually via `crontab -e`).
    ```
    # to update every 30 minutes
-   */30 * * * * cd /home/USERNAME/path/grover-dashboard && ./.venv/bin/python generate_dashboard.py
+   */30 * * * * cd /home/USERNAME/path/grover-dashboard/run.sh
    ```
 ## Usage
 
