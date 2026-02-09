@@ -248,14 +248,35 @@ def get_projects_from_directory():
         
         # determine the most recent modification date for the project directory
         last_updated = get_latest_mtime(item)
+        
+        # Try to get the last modified date from the acceptance checklist
+        checklist_last_modified = None
+        checklist_path = item / "docs/acceptance_checklist.md"
+        if checklist_path.exists():
+            try:
+                with open(checklist_path, 'r') as f:
+                    content = f.read()
+                
+                # Look for the Last modified line
+                last_modified_match = re.search(r'Last modified:\s*(\d{4}-\d{2}-\d{2})', content)
+                
+                if last_modified_match:
+                    last_modified_str = last_modified_match.group(1)
+                    checklist_last_modified = datetime.strptime(last_modified_str, '%Y-%m-%d')
+            except Exception:
+                pass
+        
+        # Use checklist last modified date if available, otherwise use the file system timestamp
+        final_last_modified = checklist_last_modified.timestamp() if checklist_last_modified else last_updated
+        
         projects.append({
             'name': item.name,
             'project_path': item.resolve().absolute(),
             'status': status,
             'progress': progress,
             'path': item.resolve().absolute(),
-            'last_modified': last_updated,
-            'last_modified_string': datetime.fromtimestamp(last_updated).strftime('%Y-%m-%d %H:%M')
+            'last_modified': final_last_modified,
+            'last_modified_string': checklist_last_modified.strftime('%Y-%m-%d %H:%M') if checklist_last_modified else datetime.fromtimestamp(last_updated).strftime('%Y-%m-%d %H:%M')
         })
     
     # Sort projects by last modified time (most recent first)
