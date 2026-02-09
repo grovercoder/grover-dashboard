@@ -254,7 +254,8 @@ def get_projects_from_directory():
             'status': status,
             'progress': progress,
             'path': item.resolve().absolute(),
-            'last_modified': last_updated
+            'last_modified': last_updated,
+            'last_modified_string': datetime.fromtimestamp(last_updated).strftime('%Y-%m-%d %H:%M')
         })
     
     # Sort projects by last modified time (most recent first)
