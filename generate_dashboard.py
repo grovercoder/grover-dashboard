@@ -44,7 +44,7 @@ def get_projects_by_activity(base_path):
     project_list.sort(key=lambda x: x['last_mod'], reverse=True)
     return project_list
 
-def get_project_last_modified_date(project_path):
+def get_project_last_modified_date(project_path, ignore=None):
     """Determine the last modified date for a project using multiple methods"""
     max_date = 0
     
@@ -67,7 +67,7 @@ def get_project_last_modified_date(project_path):
     
     # 2. Find the max modified time of project files
     try:
-        file_mtime = get_latest_mtime(project_path)
+        file_mtime = get_latest_mtime(project_path, ignore=ignore)
         max_date = max(max_date, file_mtime)
     except Exception:
         pass
@@ -295,7 +295,11 @@ def get_projects_from_directory():
         status = get_project_status(item)
         
         # Get the last modified date using the new method
-        last_modified_timestamp = get_project_last_modified_date(item)
+        # Ignore the acceptance checklist file when calculating file modification times
+        checklist_path = item / "docs/acceptance_checklist.md"
+        ignore_paths = [str(checklist_path)] if checklist_path.exists() else []
+        
+        last_modified_timestamp = get_project_last_modified_date(item, ignore=ignore_paths)
         
         # Convert timestamp to datetime for display
         last_modified_datetime = datetime.fromtimestamp(last_modified_timestamp)
@@ -316,9 +320,13 @@ def get_projects_from_directory():
     
     return projects
 
-def get_latest_mtime(project_path):
+def get_latest_mtime(project_path, ignore=None):
     # Get the mtime of the folder itself as a starting point
     max_mtime = project_path.stat().st_mtime
+    
+    # If ignore is a string, convert to list
+    if isinstance(ignore, str):
+        ignore = [ignore]
     
     # Recursively check all files
     for file in project_path.rglob('*'):
@@ -326,6 +334,12 @@ def get_latest_mtime(project_path):
         if any(part.startswith('.') for part in file.parts):
             continue
             
+        # Skip ignored paths
+        if ignore:
+            file_path_str = str(file)
+            if file_path_str in ignore:
+                continue
+                
         try:
             mtime = file.stat().st_mtime
             if mtime > max_mtime:
