@@ -44,6 +44,54 @@ def get_projects_by_activity(base_path):
     project_list.sort(key=lambda x: x['last_mod'], reverse=True)
     return project_list
 
+def get_project_last_modified_date(project_path):
+    """Determine the last modified date for a project using multiple methods"""
+    max_date = 0
+    
+    # 1. Check for git repository and get most recent commit date
+    git_path = project_path / ".git"
+    if git_path.exists():
+        try:
+            # Get the most recent commit date
+            result = subprocess.run(
+                ["git", "log", "-1", "--format=%ct"],
+                cwd=project_path,
+                capture_output=True,
+                text=True
+            )
+            if result.returncode == 0:
+                commit_timestamp = int(result.stdout.strip())
+                max_date = max(max_date, commit_timestamp)
+        except Exception:
+            pass
+    
+    # 2. Find the max modified time of project files
+    try:
+        file_mtime = get_latest_mtime(project_path)
+        max_date = max(max_date, file_mtime)
+    except Exception:
+        pass
+    
+    # 3. Check acceptance_checklist.md for last modified date
+    checklist_path = project_path / "docs/acceptance_checklist.md"
+    if checklist_path.exists():
+        try:
+            with open(checklist_path, 'r') as f:
+                content = f.read()
+            
+            # Look for the Last modified line
+            last_modified_match = re.search(r'Last modified:\s*(\d{4}-\d{2}-\d{2})', content)
+            
+            if last_modified_match:
+                last_modified_str = last_modified_match.group(1)
+                checklist_date = datetime.strptime(last_modified_str, '%Y-%m-%d')
+                checklist_timestamp = checklist_date.timestamp()
+                max_date = max(max_date, checklist_timestamp)
+        except Exception:
+            pass
+    
+    return max_date
+
 def get_progress(project_path):
     """Calculate project progress based on multiple methods"""
     # 1. Tier 1: Python Acceptance Tests
@@ -246,28 +294,11 @@ def get_projects_from_directory():
         # Determine project status based on acceptance checklist
         status = get_project_status(item)
         
-        # determine the most recent modification date for the project directory
-        last_updated = get_latest_mtime(item)
+        # Get the last modified date using the new method
+        last_modified_timestamp = get_project_last_modified_date(item)
         
-        # Try to get the last modified date from the acceptance checklist
-        checklist_last_modified = None
-        checklist_path = item / "docs/acceptance_checklist.md"
-        if checklist_path.exists():
-            try:
-                with open(checklist_path, 'r') as f:
-                    content = f.read()
-                
-                # Look for the Last modified line
-                last_modified_match = re.search(r'Last modified:\s*(\d{4}-\d{2}-\d{2})', content)
-                
-                if last_modified_match:
-                    last_modified_str = last_modified_match.group(1)
-                    checklist_last_modified = datetime.strptime(last_modified_str, '%Y-%m-%d')
-            except Exception:
-                pass
-        
-        # Use checklist last modified date if available, otherwise use the file system timestamp
-        final_last_modified = checklist_last_modified.timestamp() if checklist_last_modified else last_updated
+        # Convert timestamp to datetime for display
+        last_modified_datetime = datetime.fromtimestamp(last_modified_timestamp)
         
         projects.append({
             'name': item.name,
@@ -275,8 +306,8 @@ def get_projects_from_directory():
             'status': status,
             'progress': progress,
             'path': item.resolve().absolute(),
-            'last_modified': final_last_modified,
-            'last_modified_string': checklist_last_modified.strftime('%Y-%m-%d %H:%M') if checklist_last_modified else datetime.fromtimestamp(last_updated).strftime('%Y-%m-%d %H:%M')
+            'last_modified': last_modified_timestamp,
+            'last_modified_string': last_modified_datetime.strftime('%Y-%m-%d %H:%M')
         })
     
     # Sort projects by last modified time (most recent first)
