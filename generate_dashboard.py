@@ -47,6 +47,7 @@ def get_projects_by_activity(base_path):
 def get_project_last_modified_date(project_path, ignore=None):
     """Determine the last modified date for a project using multiple methods"""
     max_date = 0
+    checklist_path = project_path / "docs/acceptance_checklist.md"
     
     # 1. Check for git repository and get most recent commit date
     git_path = project_path / ".git"
@@ -67,13 +68,12 @@ def get_project_last_modified_date(project_path, ignore=None):
     
     # 2. Find the max modified time of project files
     try:
-        file_mtime = get_latest_mtime(project_path, ignore=ignore)
+        file_mtime = get_latest_mtime(project_path, ignore=checklist_path.resolve())
         max_date = max(max_date, file_mtime)
     except Exception:
         pass
     
     # 3. Check acceptance_checklist.md for last modified date
-    checklist_path = project_path / "docs/acceptance_checklist.md"
     if checklist_path.exists():
         try:
             with open(checklist_path, 'r') as f:
