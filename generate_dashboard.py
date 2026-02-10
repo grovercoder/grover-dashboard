@@ -9,6 +9,7 @@ from datetime import datetime
 import requests
 from jinja2 import Environment, FileSystemLoader
 from config import dashboard_config
+import argparse
 
 def get_projects_by_activity(base_path):
     project_list = []
@@ -123,7 +124,10 @@ def get_progress(project_path):
             pass # Fall back to next tier if pytest fails
 
     # 2. Tier 2: Markdown Checklist
-    checklist_path = project_path / "docs/acceptance_checklist.md"
+    checklist_path = project_path / "docs/planning/acceptance.md"
+    if not checklist_path.exists():
+        checklist_path = project_path / "docs/acceptance_checklist.md"
+
     if checklist_path.exists():
         try:
             with open(checklist_path, 'r') as f:
@@ -142,7 +146,12 @@ def get_progress(project_path):
 
 def get_project_status(project_path):
     """Determine project status based on last modified date in acceptance checklist"""
-    checklist_path = project_path / "docs/acceptance_checklist.md"
+    # the "new" path to find the acceptance criteria
+    checklist_path = project_path / "docs/planning/acceptance.md"
+
+    if not checklist_path.exists():
+        # the old path to find the acceptance criteria
+        checklist_path = project_path / "docs/acceptance_checklist.md"
     
     if not checklist_path.exists():
         return "Unknown"
@@ -489,5 +498,19 @@ header {
     
     print(f"Dashboard generated successfully! File saved to {str(output_path)}")
 
+def list_projects():
+    """Print each project from dashboard_config.projects to stdout as a single line"""
+    for project in dashboard_config.projects:
+        print(str(project))
+
 if __name__ == '__main__':
-    generate_dashboard()
+    parser = argparse.ArgumentParser(description='Generate dashboard or list projects')
+    parser.add_argument('--list-projects', action='store_true', 
+                        help='Print each project path to stdout as a single line')
+    
+    args = parser.parse_args()
+    
+    if args.list_projects:
+        list_projects()
+    else:
+        generate_dashboard()

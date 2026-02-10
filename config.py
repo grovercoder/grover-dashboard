@@ -38,17 +38,14 @@ try:
             config_data['email'] = [email_data]
 
     # weather configuration
-    print('getting weather config')
     weather_config = WeatherConfig(**config_data['weather'])
-    
+
     # email accounts
-    print('getting email config')
     accounts = []
     for acct in config_data["email"]:
         accounts.append(EmailAccount(**acct))
 
     # project listings
-    print('getting projects config')
     config_projects = config_data['projects']
     project_paths = set()
 

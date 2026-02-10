@@ -66,14 +66,14 @@
             <div class="projects-grid">
                 {% for project in projects %}
                 <div class="card project-item">
-                    <i class="fas fa-circle project-status status-{{ project.status | lower }}"></i>
-                    <button class="copy-button" onclick="copyToClipboard('{{ project.project_path }}')">
+                    <i class="fas fa-circle project-status status-{{ project.status | lower }}" title="{{ project.status }}"></i>
+                    <button class="copy-button" onclick="copyToClipboard('{{ project.project_path }}')" title="Copy path: {{ project.project_path }}">
                         <i class="fas fa-copy"></i>
                     </button>
                     <div class="project-name-wrapper">
                         <a class="project-name" href="vscode://file{{ project.project_path }}" title="{{project.path}}">{{ project.name }}</a>
                     </div>
-                    <div class="progress-bar">
+                    <div class="progress-bar" title="{{ project.progress }}%">
                         <div class="progress-fill" style="width: {{ project.progress }}%"></div>
                     </div>
                 </div>
