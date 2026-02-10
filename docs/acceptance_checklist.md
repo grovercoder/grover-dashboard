@@ -16,5 +16,5 @@ Last modified: 2026-02-08
 - [X] Fix "last modified" time determination for the project to scan file contents.
 - [X] Add copy project path to clipboard option
 - [X] Responsive design has needs work for mobile screens
-- [ ] BUG: Unknown project status for a new project
-- [ ] BUG: Project status should rely on revised last_modified date logic
+- [X] BUG: Unknown project status for a new project
+- [X] BUG: Project status should rely on revised last_modified date logic

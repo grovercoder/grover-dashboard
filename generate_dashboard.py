@@ -145,43 +145,26 @@ def get_progress(project_path):
     return "Unknown"
 
 def get_project_status(project_path):
-    """Determine project status based on last modified date in acceptance checklist"""
-    # the "new" path to find the acceptance criteria
-    checklist_path = project_path / "docs/planning/acceptance.md"
+    """Determine project status based on last modified date using multiple methods"""
+    # Get the last modified date using the new method that checks multiple sources
+    last_modified_timestamp = get_project_last_modified_date(project_path)
+    
+    if last_modified_timestamp == 0:
+        return "Unknown"
+    
+    # Convert timestamp to datetime for comparison
+    last_modified_date = datetime.fromtimestamp(last_modified_timestamp)
+    current_date = datetime.now()
+    days_diff = (current_date - last_modified_date).days
 
-    if not checklist_path.exists():
-        # the old path to find the acceptance criteria
-        checklist_path = project_path / "docs/acceptance_checklist.md"
-    
-    if not checklist_path.exists():
-        return "Unknown"
-    
-    try:
-        with open(checklist_path, 'r') as f:
-            content = f.read()
-            
-        # Look for the Last modified line
-        last_modified_match = re.search(r'Last modified:\s*(\d{4}-\d{2}-\d{2})', content)
-        
-        if not last_modified_match:
-            return "Unknown"
-            
-        last_modified_str = last_modified_match.group(1)
-        last_modified_date = datetime.strptime(last_modified_str, '%Y-%m-%d')
-        current_date = datetime.now()
-        days_diff = (current_date - last_modified_date).days
-        
-        if days_diff < 30:
-            return "Active"
-        elif days_diff < 180:
-            return "Dormant"
-        elif days_diff < 365:
-            return "Stale"
-        else:
-            return "Abandoned"
-            
-    except Exception:
-        return "Unknown"
+    if days_diff < 30:
+        return "Active"
+    elif days_diff < 180:
+        return "Dormant"
+    elif days_diff < 365:
+        return "Stale"
+    else:
+        return "Abandoned"
 
 def get_email_counts():
     """Fetch email counts from multiple mailboxes across all email accounts"""
